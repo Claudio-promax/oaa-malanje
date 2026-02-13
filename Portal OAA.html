@@ -1,0 +1,2084 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <!-- =====================================================================
+         METADADOS E CONFIGURAÇÕES
+         ===================================================================== -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>OAA MALANJE — Portal de Gestão de Advogados e Serviços Jurídicos</title>
+
+    <!-- =====================================================================
+         BIBLIOTECAS EXTERNAS (CSS)
+         ===================================================================== -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
+
+    <!-- =====================================================================
+         ESTILOS PERSONALIZADOS – DESIGN MODERNO E PROFISSIONAL (VERSÃO AMARELA)
+         ===================================================================== -->
+    <style>
+        /* ----------------------------------------------------------------
+           VARIÁVEIS – PALETA AMARELA (principal) + AZUL PETRÓLEO (destaque)
+        ---------------------------------------------------------------- */
+        :root {
+            --primary-dark: #F5C542;        /* amarelo dourado escuro */
+            --primary: #FFD966;              /* amarelo médio */
+            --primary-light: #FFF3CD;         /* amarelo claríssimo */
+            --accent: #0B2B40;                /* azul petróleo (destaque) */
+            --accent-dark: #1A4A5F;           /* azul mais escuro */
+            --accent-light: #E8EEF1;           /* azul claríssimo */
+            --white: #FFFFFF;
+            --gray-100: #F9FBFD;
+            --gray-200: #F0F4F8;
+            --gray-300: #E2E8F0;
+            --gray-400: #CBD5E0;
+            --gray-500: #A0AEC0;
+            --gray-600: #718096;
+            --gray-700: #4A5568;
+            --gray-800: #2D3748;
+            --gray-900: #1A202C;
+            --shadow-sm: 0 4px 6px rgba(0,0,0,0.02), 0 1px 3px rgba(0,0,0,0.03);
+            --shadow-md: 0 10px 25px -5px rgba(0,0,0,0.05), 0 8px 10px -6px rgba(0,0,0,0.02);
+            --shadow-lg: 0 20px 40px -12px rgba(0,0,0,0.08);
+            --shadow-xl: 0 30px 60px -15px rgba(0,0,0,0.15);
+            --glass-bg: rgba(255,255,255,0.75);
+            --glass-border: 1px solid rgba(255,255,255,0.3);
+            --gradient-gold: linear-gradient(145deg, var(--primary) 0%, var(--primary-dark) 100%);
+            --gradient-dark: linear-gradient(145deg, var(--accent) 0%, var(--accent-dark) 100%);
+            --font-primary: 'Inter', sans-serif;
+            --font-heading: 'Montserrat', sans-serif;
+            --border-radius: 20px;
+            --border-radius-sm: 12px;
+            --border-radius-lg: 32px;
+            --transition: all 0.25s cubic-bezier(0.4,0,0.2,1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; font-size: 16px; }
+        body {
+            font-family: var(--font-primary);
+            background-color: var(--gray-100);
+            color: var(--gray-800);
+            overflow-x: hidden;
+            line-height: 1.65;
+            font-weight: 400;
+        }
+        h1, h2, h3, h4, h5, h6 {
+            font-family: var(--font-heading);
+            font-weight: 700;
+            color: var(--gray-900);
+            letter-spacing: -0.02em;
+        }
+        a { text-decoration: none; transition: var(--transition); }
+
+        /* ----------------------------------------------------------------
+           PRELOADER
+        ---------------------------------------------------------------- */
+        .preloader {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: var(--accent);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 999999;
+            transition: opacity 0.6s ease;
+        }
+        .loader {
+            width: 60px; height: 60px;
+            border: 2px solid rgba(255,255,255,0.2);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* ----------------------------------------------------------------
+           NAVBAR PÚBLICA – GLASSMORPHISM
+        ---------------------------------------------------------------- */
+        .navbar-oaa {
+            background: rgba(11,43,64,0.85);  /* mantém azul na navbar para contraste */
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            padding: 16px 0;
+            position: fixed;
+            top: 0; width: 100%;
+            z-index: 9999;
+            border-bottom: 1px solid rgba(255,217,102,0.2);
+            transition: var(--transition);
+            box-shadow: var(--shadow-sm);
+        }
+        .navbar-oaa.scrolled {
+            background: rgba(11,43,64,0.95);
+            backdrop-filter: blur(16px);
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255,217,102,0.4);
+            box-shadow: var(--shadow-md);
+        }
+        .navbar-brand-oaa {
+            font-family: var(--font-heading);
+            font-weight: 800;
+            font-size: 1.6rem;
+            background: var(--gradient-gold);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            display: flex;
+            align-items: center;
+            letter-spacing: -0.5px;
+        }
+        .navbar-brand-oaa i {
+            margin-right: 10px;
+            font-size: 1.8rem;
+            color: var(--primary);
+            -webkit-text-fill-color: var(--primary);
+        }
+        .nav-link-oaa {
+            color: var(--gray-200) !important;
+            font-weight: 500;
+            padding: 8px 18px !important;
+            margin: 0 4px;
+            border-radius: 100px;
+            transition: var(--transition);
+            position: relative;
+            font-size: 0.95rem;
+        }
+        .nav-link-oaa:before {
+            content: '';
+            position: absolute;
+            bottom: 4px; left: 50%;
+            width: 0; height: 2px;
+            background: var(--primary);
+            transform: translateX(-50%);
+            transition: width 0.2s ease;
+            border-radius: 2px;
+        }
+        .nav-link-oaa:hover:before,
+        .nav-link-oaa.active:before { width: 24px; }
+        .nav-link-oaa:hover {
+            color: var(--white) !important;
+            background: rgba(255,217,102,0.08);
+        }
+        .btn-oaa {
+            background: var(--gradient-gold);
+            color: var(--accent);
+            border: none;
+            padding: 10px 28px;
+            font-weight: 600;
+            border-radius: 100px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 0.85rem;
+            transition: var(--transition);
+            box-shadow: var(--shadow-sm);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        .btn-oaa:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+            color: var(--accent);
+            background: linear-gradient(145deg, var(--primary-dark) 0%, var(--primary) 100%);
+        }
+        .btn-oaa-small {
+            padding: 8px 20px;
+            font-size: 0.8rem;
+        }
+
+        /* ----------------------------------------------------------------
+           HERO SECTION
+        ---------------------------------------------------------------- */
+        .hero-section {
+            min-height: 100vh;
+            background: var(--gradient-dark);
+            display: flex;
+            align-items: center;
+            padding-top: 120px;
+            position: relative;
+            overflow: hidden;
+        }
+        .hero-section::after {
+            content: '';
+            position: absolute;
+            top: -30%; right: -10%;
+            width: 70%; height: 150%;
+            background: radial-gradient(circle at 70% 30%, rgba(255,217,102,0.05) 0%, transparent 70%);
+            pointer-events: none;
+        }
+        .hero-title {
+            font-size: 3.8rem;
+            font-weight: 900;
+            background: linear-gradient(145deg, #FFFFFF 0%, var(--primary-light) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 16px;
+            line-height: 1.1;
+            letter-spacing: -1px;
+        }
+        .hero-subtitle {
+            font-size: 1.4rem;
+            color: var(--gray-300);
+            margin-bottom: 24px;
+            font-weight: 400;
+        }
+
+        /* ----------------------------------------------------------------
+           CARDS ELEGANTES
+        ---------------------------------------------------------------- */
+        .dashboard-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            border: var(--glass-border);
+            border-radius: var(--border-radius);
+            padding: 28px;
+            box-shadow: var(--shadow-md);
+            transition: var(--transition);
+            height: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+        .dashboard-card:hover {
+            transform: translateY(-6px);
+            box-shadow: var(--shadow-lg);
+            background: rgba(255,255,255,0.85);
+            border-color: rgba(255,217,102,0.3);
+        }
+        .dashboard-card:before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 4px;
+            background: var(--gradient-gold);
+            opacity: 0.8;
+        }
+        .card-icon {
+            width: 64px; height: 64px;
+            background: var(--gradient-gold);
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            color: var(--accent);
+            margin-bottom: 20px;
+            box-shadow: var(--shadow-sm);
+        }
+        .card-stat {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--accent);
+            line-height: 1;
+            margin: 12px 0;
+            background: var(--gradient-gold);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* ----------------------------------------------------------------
+           GALERIA EM GRID
+        ---------------------------------------------------------------- */
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 24px;
+        }
+        .gallery-item {
+            position: relative;
+            overflow: hidden;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: var(--shadow-sm);
+        }
+        .gallery-item:hover {
+            transform: translateY(-6px);
+            box-shadow: var(--shadow-lg);
+        }
+        .gallery-item img {
+            width: 100%; height: 240px;
+            object-fit: cover;
+            transition: transform 0.6s ease;
+        }
+        .gallery-item:hover img { transform: scale(1.08); }
+        .gallery-overlay {
+            position: absolute;
+            bottom: 0; left: 0; right: 0;
+            background: linear-gradient(to top, rgba(11,43,64,0.9), transparent);
+            color: white;
+            padding: 24px 20px;
+            transform: translateY(100%);
+            transition: transform 0.3s ease;
+        }
+        .gallery-item:hover .gallery-overlay { transform: translateY(0); }
+
+        /* ----------------------------------------------------------------
+           LOGIN
+        ---------------------------------------------------------------- */
+        .login-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--gradient-dark);
+            padding: 20px;
+        }
+        .login-card {
+            background: rgba(255,255,255,0.97);
+            backdrop-filter: blur(8px);
+            border-radius: 32px;
+            overflow: hidden;
+            box-shadow: var(--shadow-xl);
+            width: 100%; max-width: 460px;
+            border: 1px solid rgba(255,255,255,0.5);
+        }
+        .login-header {
+            background: var(--gradient-dark);
+            padding: 40px 30px 30px;
+            text-align: center;
+            border-bottom: 3px solid var(--primary);
+        }
+        .login-header h2 { color: var(--primary); font-weight: 700; font-size: 2rem; }
+        .btn-login {
+            background: var(--gradient-gold);
+            border: none;
+            color: var(--accent);
+            padding: 14px;
+            font-weight: 700;
+            border-radius: 100px;
+            width: 100%;
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+        .btn-login:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+
+        /* ----------------------------------------------------------------
+           PORTAL – SIDEBAR
+        ---------------------------------------------------------------- */
+        .portal-container { display: none; min-height: 100vh; background: var(--gray-100); }
+        .sidebar {
+            width: 280px;
+            background: var(--gradient-dark);
+            color: white;
+            position: fixed;
+            top: 0; left: 0;
+            height: 100vh;
+            z-index: 1000;
+            box-shadow: 5px 0 30px rgba(0,0,0,0.12);
+            overflow-y: auto;
+            transition: transform 0.3s cubic-bezier(0.4,0,0.2,1);
+        }
+        .sidebar-header {
+            padding: 32px 24px;
+            border-bottom: 1px solid rgba(255,217,102,0.3);
+            background: rgba(0,0,0,0.15);
+        }
+        .sidebar-logo {
+            font-family: var(--font-heading);
+            font-weight: 900;
+            font-size: 1.5rem;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .sidebar-user {
+            padding: 24px;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+        }
+        .user-info { display: flex; align-items: center; gap: 16px; }
+        .user-avatar {
+            width: 52px; height: 52px;
+            border-radius: 16px;
+            background: var(--gradient-gold);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.6rem;
+            color: var(--accent);
+            font-weight: bold;
+            box-shadow: var(--shadow-md);
+        }
+        .sidebar .nav-link {
+            color: rgba(255,255,255,0.75);
+            padding: 14px 24px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            transition: var(--transition);
+            border-left: 4px solid transparent;
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+        .sidebar .nav-link i { width: 22px; text-align: center; font-size: 1.1rem; }
+        .sidebar .nav-link:hover,
+        .sidebar .nav-link.active {
+            color: var(--primary);
+            background: linear-gradient(90deg, rgba(255,217,102,0.12), transparent);
+            border-left-color: var(--primary);
+        }
+        .main-content {
+            margin-left: 280px;
+            padding: 0;
+            min-height: 100vh;
+            background: var(--gray-100);
+        }
+        .top-navbar {
+            background: var(--white);
+            padding: 16px 32px;
+            box-shadow: var(--shadow-sm);
+            position: sticky;
+            top: 0; z-index: 99;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--gray-200);
+        }
+        .content-area { padding: 32px; }
+
+        /* ----------------------------------------------------------------
+           TABELAS DATATABLES – ESTILO CLEAN
+        ---------------------------------------------------------------- */
+        .dataTables_wrapper .dataTables_length select,
+        .dataTables_wrapper .dataTables_filter input {
+            border: 1px solid var(--gray-300);
+            border-radius: 12px;
+            padding: 6px 12px;
+            background: var(--white);
+            font-size: 0.9rem;
+        }
+        .dataTables_wrapper .dataTables_paginate .paginate_button {
+            border-radius: 10px;
+            padding: 5px 12px;
+            margin: 0 3px;
+            border: 1px solid transparent;
+        }
+        .dataTables_wrapper .dataTables_paginate .paginate_button.current {
+            background: var(--gradient-gold) !important;
+            color: var(--accent) !important;
+            border: none;
+            box-shadow: var(--shadow-sm);
+        }
+
+        /* ----------------------------------------------------------------
+           MODAIS PÚBLICOS
+        ---------------------------------------------------------------- */
+        .modal-publico .modal-header {
+            background: var(--accent);
+            color: var(--primary);
+            border-bottom: 2px solid var(--primary);
+        }
+        .modal-publico .modal-header .btn-close { filter: brightness(0) invert(1); opacity: 0.8; }
+        .modal-publico .modal-body {
+            max-height: 70vh;
+            overflow-y: auto;
+            padding: 24px;
+        }
+
+        /* ----------------------------------------------------------------
+           RESPONSIVIDADE
+        ---------------------------------------------------------------- */
+        @media (max-width: 992px) {
+            .sidebar { transform: translateX(-100%); }
+            .sidebar.show { transform: translateX(0); }
+            .main-content { margin-left: 0; }
+            .hero-title { font-size: 2.8rem; }
+        }
+        @media (max-width: 768px) {
+            .top-navbar { padding: 16px; }
+            .content-area { padding: 24px; }
+            .hero-title { font-size: 2.2rem; }
+        }
+
+        .fade-in { animation: fadeIn 0.4s ease-out; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- =====================================================================
+         PRELOADER
+         ===================================================================== -->
+    <div class="preloader" id="preloader">
+        <div class="preloader-content text-center">
+            <div class="loader"></div>
+            <h3 style="color: var(--primary); font-weight: 700;">OAA MALANJE</h3>
+            <p style="color: var(--gray-300); margin-top: 8px;">Carregando sistema...</p>
+        </div>
+    </div>
+
+    <!-- =====================================================================
+         PÁGINA PÚBLICA (APENAS HERO + CONTACTO; DEMAIS ITENS ABREM EM MODAIS)
+         ===================================================================== -->
+    <div id="landingPage">
+        <!-- NAVBAR PÚBLICA -->
+        <nav class="navbar navbar-expand-lg navbar-dark navbar-oaa fixed-top">
+            <div class="container">
+                <a class="navbar-brand navbar-brand-oaa" href="#home">
+                    <i class="fas fa-balance-scale me-2"></i>OAA MALANJE
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarLanding">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarLanding">
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item"><a class="nav-link nav-link-oaa" href="#home">INÍCIO</a></li>
+                        <li class="nav-item"><a class="nav-link nav-link-oaa" href="#" data-bs-toggle="modal" data-bs-target="#modalSobre">SOBRE</a></li>
+                        <li class="nav-item"><a class="nav-link nav-link-oaa" href="#" data-bs-toggle="modal" data-bs-target="#modalServicos">SERVIÇOS</a></li>
+                        <li class="nav-item"><a class="nav-link nav-link-oaa" href="#" data-bs-toggle="modal" data-bs-target="#modalGaleria">GALERIA</a></li>
+                        <li class="nav-item"><a class="nav-link nav-link-oaa" href="#" data-bs-toggle="modal" data-bs-target="#modalNoticias">NOTÍCIAS</a></li>
+                        <li class="nav-item"><a class="nav-link nav-link-oaa" href="#" data-bs-toggle="modal" data-bs-target="#modalEventos">EVENTOS</a></li>
+                        <li class="nav-item"><a class="nav-link nav-link-oaa" href="#" data-bs-toggle="modal" data-bs-target="#modalDocumentos">DOCUMENTOS</a></li>
+                        <li class="nav-item"><a class="nav-link nav-link-oaa" href="#contacto">CONTACTO</a></li>
+                        <li class="nav-item ms-lg-3">
+                            <button class="btn btn-oaa" onclick="mostrarLogin()">
+                                <i class="fas fa-sign-in-alt me-2"></i>ACESSAR PORTAL
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <!-- HERO / INÍCIO -->
+        <section id="home" class="hero-section">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-lg-6">
+                        <div class="hero-content">
+                            <h1 class="hero-title animate__animated animate__fadeInDown">ORDEM DOS ADVOGADOS DE ANGOLA</h1>
+                            <h2 class="hero-subtitle animate__animated animate__fadeInUp">Delegação Provincial de Malanje</h2>
+                            <p class="text-light mb-4 animate__animated animate__fadeInUp" id="heroDescricao">
+                                Sistema Premium de Gestão e Controlo de Advogados e Serviços Jurídicos.
+                                Tecnologia de ponta para uma advocacia moderna e eficiente.
+                            </p>
+                            <div class="d-flex flex-wrap gap-3 mt-4">
+                                <button class="btn btn-oaa" data-bs-toggle="modal" data-bs-target="#modalServicos">
+                                    <i class="fas fa-play-circle me-2"></i>CONHECER SERVIÇOS
+                                </button>
+                                <button class="btn btn-outline-light" data-bs-toggle="modal" data-bs-target="#modalGaleria" style="border-color: var(--primary); color: var(--primary);">
+                                    <i class="fas fa-images me-2"></i>VER GALERIA
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="text-center">
+                            <img src="https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=600" alt="Justiça" class="img-fluid rounded-4 shadow-lg mb-4" id="heroImagem">
+                            <div class="dashboard-card">
+                                <h4 class="mb-3" style="color: var(--accent);">SISTEMA INTEGRADO</h4>
+                                <p class="mb-0">Gestão completa de advogados, processos, documentos e serviços jurídicos em uma única plataforma.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CONTACTO (fixo) -->
+        <section id="contacto" class="py-5 bg-light">
+            <div class="container">
+                <h2 class="text-center mb-5" style="color: var(--accent);">CONTACTO</h2>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="dashboard-card h-100">
+                            <h4 class="mb-4">INFORMAÇÕES DE CONTACTO</h4>
+                            <div class="contact-info">
+                                <p id="enderecoPublico"><i class="fas fa-map-marker-alt" style="color: var(--primary); margin-right: 12px;"></i> <strong>Endereço:</strong> Rua Principal, Bairro Maxinde, Malanje, Angola</p>
+                                <p id="telefonePublico"><i class="fas fa-phone" style="color: var(--primary); margin-right: 12px;"></i> <strong>Telefone:</strong> +244 933 162 030</p>
+                                <p id="emailPublico"><i class="fas fa-envelope" style="color: var(--primary); margin-right: 12px;"></i> <strong>Email:</strong> malanje@oaa.ao</p>
+                                <p id="horarioPublico"><i class="fas fa-clock" style="color: var(--primary); margin-right: 12px;"></i> <strong>Horário:</strong> Segunda a Sexta, 8:00 às 17:00</p>
+                            </div>
+                            <div class="mt-4">
+                                <h5>Localização</h5>
+                                <div class="map-container mt-3" id="mapaPublico">
+                                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3940.097593496217!2d16.343097!3d-9.545648!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zOcKwMzInNDAuNCJTIDE2wrAyMCczNS4xIkU!5e0!3m2!1spt-PT!2sao!4v1620000000000!5m2!1spt-PT!2sao" width="100%" height="200" style="border:0; border-radius: 16px;" allowfullscreen="" loading="lazy"></iframe>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="dashboard-card h-100">
+                            <h4 class="mb-4">ENVIE UMA MENSAGEM</h4>
+                            <form id="contactForm">
+                                <div class="mb-3"><label class="form-label">Nome Completo *</label><input type="text" class="form-control" style="border-radius: 12px; border: 1px solid var(--gray-300); padding: 12px;" required></div>
+                                <div class="mb-3"><label class="form-label">Email *</label><input type="email" class="form-control" style="border-radius: 12px; border: 1px solid var(--gray-300); padding: 12px;" required></div>
+                                <div class="mb-3"><label class="form-label">Telefone</label><input type="tel" class="form-control" style="border-radius: 12px; border: 1px solid var(--gray-300); padding: 12px;"></div>
+                                <div class="mb-3"><label class="form-label">Assunto</label><select class="form-control" style="border-radius: 12px; border: 1px solid var(--gray-300); padding: 12px;"><option>Informação Geral</option><option>Inscrição como Advogado</option><option>Eventos e Formações</option><option>Outro</option></select></div>
+                                <div class="mb-3"><label class="form-label">Mensagem *</label><textarea class="form-control" rows="4" style="border-radius: 12px; border: 1px solid var(--gray-300); padding: 12px;" required></textarea></div>
+                                <button type="submit" class="btn btn-oaa w-100"><i class="fas fa-paper-plane me-2"></i> ENVIAR MENSAGEM</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- RODAPÉ -->
+        <footer class="py-5" style="background: var(--accent); color: var(--gray-300);">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-4">
+                        <h5 class="mb-3" style="color: var(--primary);">OAA MALANJE</h5>
+                        <p>Ordem dos Advogados de Angola<br>Delegação Provincial de Malanje</p>
+                    </div>
+                    <div class="col-md-4">
+                        <h5 class="mb-3" style="color: var(--primary);">LIGAÇÕES RÁPIDAS</h5>
+                        <ul class="list-unstyled">
+                            <li><a href="#home" class="text-light text-decoration-none">Início</a></li>
+                            <li><a href="#" class="text-light text-decoration-none" data-bs-toggle="modal" data-bs-target="#modalSobre">Sobre</a></li>
+                            <li><a href="#" class="text-light text-decoration-none" data-bs-toggle="modal" data-bs-target="#modalServicos">Serviços</a></li>
+                            <li><a href="#" class="text-light text-decoration-none" data-bs-toggle="modal" data-bs-target="#modalNoticias">Notícias</a></li>
+                            <li><a href="#" class="text-light text-decoration-none" data-bs-toggle="modal" data-bs-target="#modalEventos">Eventos</a></li>
+                            <li><a href="#" class="text-light text-decoration-none" data-bs-toggle="modal" data-bs-target="#modalDocumentos">Documentos</a></li>
+                            <li><a href="#contacto" class="text-light text-decoration-none">Contacto</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-md-4">
+                        <h5 class="mb-3" style="color: var(--primary);">SIGA-NOS</h5>
+                        <div class="social-links">
+                            <a href="#" class="me-3" style="color: var(--primary);"><i class="fab fa-facebook fa-2x"></i></a>
+                            <a href="#" class="me-3" style="color: var(--primary);"><i class="fab fa-twitter fa-2x"></i></a>
+                            <a href="#" style="color: var(--primary);"><i class="fab fa-linkedin fa-2x"></i></a>
+                        </div>
+                    </div>
+                </div>
+                <hr style="background-color: rgba(255,217,102,0.3); height: 1px; border: none; margin: 32px 0;">
+                <div class="text-center">
+                    <p class="mb-2">&copy; 2024 OAA Malanje - Todos os direitos reservados</p>
+                    <p class="mb-0"><small>Portal desenvolvido como Projeto de TFC em Engenharia Informática</small></p>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- =====================================================================
+         MODAIS PÚBLICOS (ESTRUTURA – CONTEÚDO VIA JS)
+         ===================================================================== -->
+    <div class="modal fade modal-publico" id="modalSobre" tabindex="-1"><div class="modal-dialog modal-xl"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="modalSobreLabel"><i class="fas fa-info-circle me-2"></i> SOBRE</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body" id="modalSobreBody"></div><div class="modal-footer"><button class="btn btn-outline-dark" data-bs-dismiss="modal">Fechar</button></div></div></div></div>
+    <div class="modal fade modal-publico" id="modalServicos" tabindex="-1"><div class="modal-dialog modal-xl"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="modalServicosLabel"><i class="fas fa-cogs me-2"></i> SERVIÇOS</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body" id="modalServicosBody"></div><div class="modal-footer"><button class="btn btn-outline-dark" data-bs-dismiss="modal">Fechar</button></div></div></div></div>
+    <div class="modal fade modal-publico" id="modalGaleria" tabindex="-1"><div class="modal-dialog modal-xl"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="modalGaleriaLabel"><i class="fas fa-images me-2"></i> GALERIA</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body" id="modalGaleriaBody"></div><div class="modal-footer"><button class="btn btn-outline-dark" data-bs-dismiss="modal">Fechar</button></div></div></div></div>
+    <div class="modal fade modal-publico" id="modalNoticias" tabindex="-1"><div class="modal-dialog modal-xl"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="modalNoticiasLabel"><i class="fas fa-newspaper me-2"></i> NOTÍCIAS</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body" id="modalNoticiasBody"></div><div class="modal-footer"><button class="btn btn-outline-dark" data-bs-dismiss="modal">Fechar</button></div></div></div></div>
+    <div class="modal fade modal-publico" id="modalEventos" tabindex="-1"><div class="modal-dialog modal-xl"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="modalEventosLabel"><i class="fas fa-calendar-alt me-2"></i> EVENTOS</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body" id="modalEventosBody"></div><div class="modal-footer"><button class="btn btn-outline-dark" data-bs-dismiss="modal">Fechar</button></div></div></div></div>
+    <div class="modal fade modal-publico" id="modalDocumentos" tabindex="-1"><div class="modal-dialog modal-xl"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="modalDocumentosLabel"><i class="fas fa-file-alt me-2"></i> DOCUMENTOS</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body" id="modalDocumentosBody"></div><div class="modal-footer"><button class="btn btn-outline-dark" data-bs-dismiss="modal">Fechar</button></div></div></div></div>
+
+    <!-- =====================================================================
+         TELA DE LOGIN
+         ===================================================================== -->
+    <div id="loginScreen" class="login-container" style="display: none;">
+        <div class="login-card">
+            <div class="login-header">
+                <h2>PORTAL OAA MALANJE</h2>
+                <p style="color: var(--gray-300);">Sistema de Gestão de Advogados</p>
+            </div>
+            <div class="login-body" style="padding: 40px;">
+                <form id="loginForm">
+                    <div class="form-floating mb-4">
+                        <input type="email" class="form-control" id="email" placeholder="email@exemplo.com" style="border-radius: 12px; border: 1px solid var(--gray-300);" required>
+                        <label for="email"><i class="fas fa-envelope me-2"></i> Email</label>
+                    </div>
+                    <div class="form-floating mb-4">
+                        <input type="password" class="form-control" id="password" placeholder="Senha" style="border-radius: 12px; border: 1px solid var(--gray-300);" required>
+                        <label for="password"><i class="fas fa-lock me-2"></i> Senha</label>
+                    </div>
+                    <div class="mb-3 text-center"><small class="text-muted">Contacte a administração para obter acesso</small></div>
+                    <button type="submit" class="btn-login mb-3"><i class="fas fa-sign-in-alt me-2"></i> ENTRAR NO PORTAL</button>
+                    <div class="text-center"><small class="text-muted"><strong>Problemas?</strong><br>malanje@oaa.ao</small></div>
+                </form>
+            </div>
+            <div class="text-center p-3 border-top" style="border-top-color: var(--gray-200) !important;">
+                <button class="btn btn-outline-dark btn-sm" onclick="voltarParaSite()"><i class="fas fa-arrow-left me-2"></i> Voltar para o Site</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- =====================================================================
+         PORTAL (ADMIN / ADVOGADO)
+         ===================================================================== -->
+    <div id="portalContainer" class="portal-container">
+        <!-- SIDEBAR VERTICAL -->
+        <nav class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-logo"><i class="fas fa-balance-scale"></i><span>OAA MALANJE</span></div>
+            </div>
+            <div class="sidebar-user">
+                <div class="user-info">
+                    <div class="user-avatar" id="userAvatar">A</div>
+                    <div class="user-details">
+                        <h6 id="userName" style="margin-bottom: 4px; color: white;">Administrador</h6>
+                        <small id="userRole" style="color: var(--gray-400);">Administrador do Sistema</small><br>
+                        <small id="userEmail" style="color: var(--gray-500);">admin@oaa.ao</small>
+                    </div>
+                </div>
+            </div>
+            <div class="sidebar-menu">
+                <ul class="nav flex-column" id="mainMenu"></ul>
+            </div>
+            <div class="text-center p-3 border-top" style="border-top-color: rgba(255,217,102,0.3) !important;">
+                <button class="btn btn-outline-light btn-sm w-100" onclick="logout()" style="border-radius: 100px; border-color: var(--primary); color: var(--primary);">
+                    <i class="fas fa-sign-out-alt me-2"></i> Sair do Sistema
+                </button>
+            </div>
+        </nav>
+
+        <!-- ÁREA PRINCIPAL -->
+        <div class="main-content">
+            <nav class="top-navbar">
+                <button class="btn d-lg-none" onclick="toggleSidebar()" style="background: none; border: none; color: var(--accent);">
+                    <i class="fas fa-bars fa-lg"></i>
+                </button>
+                <h4 id="pageTitle" style="margin: 0; font-weight: 600; color: var(--accent);">Dashboard Principal</h4>
+                <div class="dropdown">
+                    <button class="btn btn-oaa dropdown-toggle" data-bs-toggle="dropdown" style="padding: 8px 24px;">
+                        <i class="fas fa-user me-2"></i> <span id="topUserName">Administrador</span>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end" style="border-radius: 16px; border: none; box-shadow: var(--shadow-lg); padding: 8px;">
+                        <li><a class="dropdown-item" href="#" onclick="loadPage('perfil')"><i class="fas fa-user-circle me-2"></i> Meu Perfil</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="#" onclick="logout()"><i class="fas fa-sign-out-alt me-2"></i> Sair</a></li>
+                    </ul>
+                </div>
+            </nav>
+            <div class="content-area" id="contentArea"></div>
+        </div>
+    </div>
+
+    <!-- =====================================================================
+         SCRIPTS
+         ===================================================================== -->
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+
+    <!-- =====================================================================
+         JAVASCRIPT PRINCIPAL – COMPLETO E FUNCIONAL (IDÊNTICO AO ANTERIOR)
+         ===================================================================== -->
+    <script>
+        // =====================================================================
+        // 1. DADOS FICTÍCIOS (SIMULAM BANCO DE DADOS)
+        //    TODAS AS ALTERAÇÕES SÃO APLICADAS DIRETAMENTE NOS ARRAYS
+        // =====================================================================
+
+        // ---------- USUÁRIOS ----------
+        let usuarios = [
+            { id: 1, nome: "Administrador Principal", email: "admin@oaa.ao", senha: "admin123", role: "admin", avatar: "A", telefone: "+244 933 162 030", ativo: true, dataRegistro: "2023-01-15" },
+            { id: 2, nome: "Gestor OAA", email: "gestor@oaa.ao", senha: "gestor123", role: "admin", avatar: "G", telefone: "+244 923 456 789", ativo: true, dataRegistro: "2023-02-20" },
+            { id: 3, nome: "Dr. Castro Adriano", email: "advogado@oaa.ao", senha: "adv123", role: "advogado", situacao: "Advogado", cedula: "OAA/MA-2024", provincia: "Malanje", especialidade: "Direito Civil", avatar: "C", telefone: "+244 912 345 678", endereco: "Rua Principal, Malanje", experiencia: 8, ativo: true, dataRegistro: "2024-01-10" },
+            { id: 4, nome: "Dra. Maria Silva", email: "maria@adv.ao", senha: "adv123", role: "advogado", situacao: "Advogado", cedula: "OAA/MA-1234", provincia: "Malanje", especialidade: "Direito Penal", avatar: "M", telefone: "+244 922 333 444", endereco: "Bairro Maxinde, Malanje", experiencia: 12, ativo: true, dataRegistro: "2023-05-15" }
+        ];
+
+        // ---------- PROCESSOS ----------
+        let processos = [
+            { id: 1, numero: "2024/001", cliente: "João Mendes", tipo: "Civil", subTipo: "Cível", advogadoId: 3, data: "2024-01-15", status: "ativo", valor: 250000, descricao: "Processo de divórcio" },
+            { id: 2, numero: "2024/002", cliente: "Empresa XYZ", tipo: "Comercial", subTipo: "Laboral", advogadoId: 4, data: "2024-02-10", status: "ativo", valor: 500000, descricao: "Contrato comercial" }
+        ];
+
+        // ---------- QUOTAS ----------
+        let quotas = [
+            { id: 1, advogadoId: 3, ano: 2024, mes: "Janeiro", valor: 25000, pago: true, dataPagamento: "2024-01-05" },
+            { id: 2, advogadoId: 4, ano: 2024, mes: "Janeiro", valor: 25000, pago: true, dataPagamento: "2024-01-07" },
+            { id: 3, advogadoId: 3, ano: 2024, mes: "Fevereiro", valor: 25000, pago: false, dataPagamento: null },
+            { id: 4, advogadoId: 4, ano: 2024, mes: "Fevereiro", valor: 25000, pago: true, dataPagamento: "2024-02-05" },
+            { id: 5, advogadoId: 3, ano: 2024, mes: "Março", valor: 25000, pago: false, dataPagamento: null }
+        ];
+
+        // ---------- ASSISTÊNCIAS ----------
+        let assistencias = [
+            { id: 1, requerente: "João Mendes", advogadoId: 3, tipoProcesso: "Cível", provincia: "Malanje", numeroOficio: "OF-001/2024", dataAssistencia: "2024-01-20", descricao: "Assistência jurídica em processo de divórcio", status: "Concluída" },
+            { id: 2, requerente: "António Costa", advogadoId: 4, tipoProcesso: "Laboral", provincia: "Malanje", numeroOficio: "OF-002/2024", dataAssistencia: "2024-02-15", descricao: "Assistência em rescisão contratual", status: "Realizada" },
+            { id: 3, requerente: "Maria Fernanda", advogadoId: 3, tipoProcesso: "Família", provincia: "Malanje", numeroOficio: "OF-003/2024", dataAssistencia: "2024-03-10", descricao: "Pensão alimentícia", status: "Pendente" }
+        ];
+
+        // ---------- NOTÍCIAS ----------
+        let noticias = [
+            { id: 1, titulo: "Nova sede da OAA Malanje será inaugurada em Maio", resumo: "Inauguração prevista para 15 de Maio de 2024.", conteudo: "Conteúdo completo...", dataPublicacao: "2024-04-01", autor: "Administrador", imagem: "https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=400", status: "publicado", publico: true },
+            { id: 2, titulo: "Formação em Direito Digital para advogados", resumo: "Curso em parceria com a Faculdade de Direito.", conteudo: "Conteúdo completo...", dataPublicacao: "2024-03-28", autor: "Secretaria", imagem: "https://images.unsplash.com/photo-1589391886085-8b6b0ac72a1a?w=400", status: "publicado", publico: true },
+            { id: 3, titulo: "Novo regulamento de estágio", resumo: "Novas regras para o estágio.", conteudo: "Detalhes...", dataPublicacao: "2024-04-10", autor: "Conselho", imagem: "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=400", status: "rascunho", publico: false }
+        ];
+
+        // ---------- COMUNICADOS ----------
+        let comunicados = [
+            { id: 1, titulo: "Reunião do Conselho", conteudo: "Reunião ordinária no dia 25/04.", data: "2024-04-05", autor: "Presidente", publico: true, status: "publicado" },
+            { id: 2, titulo: "Férias da secretaria", conteudo: "Fechada nos dias 1 e 2 de Maio.", data: "2024-04-12", autor: "Administração", publico: true, status: "publicado" }
+        ];
+
+        // ---------- EVENTOS ----------
+        let eventos = [
+            { id: 1, titulo: "Seminário: A Reforma do Processo Civil", tipo: "Seminário", data: "2024-05-20", local: "Auditório da OAA Malanje", descricao: "Evento com especialistas.", vagas: 50, inscritos: 32, status: "aberto", publico: true, documentos: [
+                { nome: "Edital_Seminario_2024.pdf", tamanho: "1.2 MB", descricao: "Edital", dataUpload: "2024-04-01" }
+            ]},
+            { id: 2, titulo: "Curso de Prática Penal", tipo: "Curso", dataInicio: "2024-06-05", dataFim: "2024-07-10", local: "Sala de Formação", descricao: "Curso prático.", vagas: 30, inscritos: 15, status: "aberto", publico: true, documentos: [] }
+        ];
+
+        // ---------- DOCUMENTOS OFICIAIS ----------
+        let documentosOficiais = [
+            { id: 1, titulo: "Código Deontológico da OAA", categoria: "Regulamento", dataPublicacao: "2023-01-15", arquivo: "codigo.pdf", tamanho: "2.3 MB", downloads: 245, publico: true },
+            { id: 2, titulo: "Tabela de Honorários 2024", categoria: "Tabela", dataPublicacao: "2024-01-01", arquivo: "tabela.pdf", tamanho: "1.1 MB", downloads: 578, publico: true }
+        ];
+
+        // ---------- GALERIA ----------
+        let galeriaImagens = [
+            { id: 1, titulo: "Sede OAA Malanje", descricao: "Nossa sede principal.", imagem: "https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=600", imagemGrande: "https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=1200" },
+            { id: 2, titulo: "Biblioteca Jurídica", descricao: "Mais de 5.000 volumes.", imagem: "https://images.unsplash.com/photo-1589391886085-8b6b0ac72a1a?w=600", imagemGrande: "https://images.unsplash.com/photo-1589391886085-8b6b0ac72a1a?w=1200" },
+            { id: 3, titulo: "Sala de Reuniões", descricao: "Equipada.", imagem: "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=600", imagemGrande: "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=1200" }
+        ];
+
+        // ---------- CONTEÚDO PÚBLICO (CMS) – 8 SECÇÕES ----------
+        let conteudoPublico = {
+            inicio: { titulo: "Bem-vindo à OAA Malanje", subtitulo: "Delegação Provincial de Malanje", descricao: "Sistema Premium de Gestão e Controlo de Advogados e Serviços Jurídicos. Tecnologia de ponta para uma advocacia moderna e eficiente.", imagem: "https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=1200" },
+            sobre: { missao: "Garantir a defesa do Estado de Direito, a administração da justiça, a defesa dos direitos, liberdades e garantias dos cidadãos.", visao: "Ser referência em advocacia, ética e cidadania em Angola, promovendo o acesso à justiça e o desenvolvimento do Estado de Direito.", valores: "Ética, Transparência e Responsabilidade.", historia: "A Delegação Provincial de Malanje foi estabelecida com o compromisso de representar e regular a advocacia na província." },
+            contacto: { endereco: "Rua Principal, Bairro Maxinde, Malanje, Angola", telefone: "+244 933 162 030", email: "malanje@oaa.ao", horario: "Segunda a Sexta, 8:00 às 17:00", mapa: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3940.097593496217!2d16.343097!3d-9.545648!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zOcKwMzInNDAuNCJTIDE2wrAyMCczNS4xIkU!5e0!3m2!1spt-PT!2sao!4v1620000000000!5m2!1spt-PT!2sao" },
+            servicos: { tituloModal: "NOSSOS SERVIÇOS", cards: [
+                { id: 1, titulo: "Gestão de Advogados", descricaoCurta: "Cadastro e gestão completa dos advogados.", icone: "fas fa-user-tie", imagem: "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=600", descricaoLonga: "Sistema integrado: cadastro, situação profissional, especialidades, certificados." },
+                { id: 2, titulo: "Processos Jurídicos", descricaoCurta: "Controle completo de processos.", icone: "fas fa-gavel", imagem: "https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=600", descricaoLonga: "Acompanhamento em tempo real: andamento, prazos, audiências, documentos." },
+                { id: 3, titulo: "Gestão de Quotas", descricaoCurta: "Sistema automatizado de quotas.", icone: "fas fa-file-invoice-dollar", imagem: "https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=600", descricaoLonga: "Controle financeiro: boletos, histórico, notificações, relatórios." }
+            ] },
+            galeria: { tituloModal: "GALERIA INSTITUCIONAL", imagens: galeriaImagens },
+            noticias: { tituloModal: "NOTÍCIAS DA ORDEM" },
+            eventos: { tituloModal: "EVENTOS E CURSOS" },
+            documentos: { tituloModal: "DOCUMENTOS OFICIAIS" }
+        };
+
+        // ---------- USUÁRIO ATUAL ----------
+        let currentUser = null;
+
+        // =====================================================================
+        // 2. INICIALIZAÇÃO
+        // =====================================================================
+        document.addEventListener('DOMContentLoaded', function() {
+            AOS.init({ duration: 800, once: true });
+            setTimeout(() => { document.getElementById('preloader').style.opacity = '0'; setTimeout(() => document.getElementById('preloader').style.display = 'none', 500); }, 1500);
+            document.getElementById('loginForm').addEventListener('submit', e => { e.preventDefault(); realizarLogin(); });
+            document.getElementById('contactForm')?.addEventListener('submit', e => { e.preventDefault(); alert('Mensagem enviada!'); this.reset(); });
+            window.addEventListener('scroll', () => document.querySelector('.navbar-oaa').classList.toggle('scrolled', window.scrollY > 50));
+            carregarConteudoModaisPublicos();
+            atualizarConteudoPublicoFromCMS();
+            verificarUsuarioSalvo();
+        });
+
+        // =====================================================================
+        // 3. FUNÇÕES DOS MODAIS PÚBLICOS
+        // =====================================================================
+        function carregarConteudoModaisPublicos() {
+            carregarModalSobre();
+            carregarModalServicos();
+            carregarModalGaleria();
+            carregarModalNoticias();
+            carregarModalEventos();
+            carregarModalDocumentos();
+        }
+
+        function carregarModalSobre() {
+            let b = document.getElementById('modalSobreBody');
+            b.innerHTML = `<div class="row g-4">${[1,2,3].map(i=>`<div class="col-md-4"><div class="dashboard-card text-center"><div class="card-icon"><i class="fas ${i==1?'fa-bullseye':i==2?'fa-eye':'fa-heart'}"></i></div><h4>${i==1?'MISSÃO':i==2?'VISÃO':'VALORES'}</h4><p>${conteudoPublico.sobre[i==1?'missao':i==2?'visao':'valores']}</p></div></div>`).join('')}</div><div class="row mt-5"><div class="col-lg-6"><img src="https://images.unsplash.com/photo-1589391886085-8b6b0ac72a1a?w=600" class="img-fluid rounded shadow"></div><div class="col-lg-6"><div class="dashboard-card"><h4>NOSSA HISTÓRIA</h4><p>${conteudoPublico.sobre.historia}</p><ul><li><strong>1995:</strong> Primeira reunião</li><li><strong>2000:</strong> Delegação Provincial</li><li><strong>2010:</strong> Sede própria</li><li><strong>2020:</strong> Sistema digital</li></ul></div></div></div>`;
+        }
+
+        function carregarModalServicos() {
+            let b = document.getElementById('modalServicosBody');
+            document.getElementById('modalServicosLabel').innerHTML = `<i class="fas fa-cogs me-2"></i> ${conteudoPublico.servicos.tituloModal}`;
+            b.innerHTML = `<div class="row g-4">${conteudoPublico.servicos.cards.map(card => `<div class="col-md-4"><div class="dashboard-card text-center h-100" data-bs-toggle="modal" data-bs-target="#modalServicoDetalhe${card.id}"><div class="card-icon"><i class="${card.icone}"></i></div><h4>${card.titulo}</h4><p>${card.descricaoCurta}</p><small class="text-warning">Clique para detalhes</small></div></div>`).join('')}</div>`;
+            conteudoPublico.servicos.cards.forEach(card => {
+                if (!document.getElementById(`modalServicoDetalhe${card.id}`)) {
+                    let div = document.createElement('div');
+                    div.innerHTML = `<div class="modal fade" id="modalServicoDetalhe${card.id}" tabindex="-1"><div class="modal-dialog modal-lg"><div class="modal-content"><div class="modal-header"><h5 class="modal-title">${card.titulo}</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><img src="${card.imagem}" class="img-fluid rounded mb-3"><p>${card.descricaoLonga}</p></div><div class="modal-footer"><button class="btn btn-outline-dark" data-bs-dismiss="modal">Fechar</button></div></div></div></div>`;
+                    document.body.appendChild(div.firstElementChild);
+                }
+            });
+        }
+
+        function carregarModalGaleria() {
+            let b = document.getElementById('modalGaleriaBody');
+            document.getElementById('modalGaleriaLabel').innerHTML = `<i class="fas fa-images me-2"></i> ${conteudoPublico.galeria.tituloModal}`;
+            let html = '<div class="gallery-grid">';
+            conteudoPublico.galeria.imagens.forEach(img => {
+                html += `<div class="gallery-item" data-bs-toggle="modal" data-bs-target="#modalGaleriaImg${img.id}"><img src="${img.imagem}" alt="${img.titulo}"><div class="gallery-overlay"><h5>${img.titulo}</h5><small>Ampliar</small></div></div>`;
+                if (!document.getElementById(`modalGaleriaImg${img.id}`)) {
+                    let div = document.createElement('div');
+                    div.innerHTML = `<div class="modal fade modal-gallery" id="modalGaleriaImg${img.id}" tabindex="-1"><div class="modal-dialog modal-lg"><div class="modal-content"><div class="modal-header"><h5 class="modal-title">${img.titulo}</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><img src="${img.imagemGrande}" class="img-fluid"></div><div class="modal-footer"><p>${img.descricao}</p></div></div></div></div>`;
+                    document.body.appendChild(div.firstElementChild);
+                }
+            });
+            html += '</div>';
+            b.innerHTML = html;
+        }
+
+        function carregarModalNoticias() {
+            let b = document.getElementById('modalNoticiasBody');
+            document.getElementById('modalNoticiasLabel').innerHTML = `<i class="fas fa-newspaper me-2"></i> ${conteudoPublico.noticias.tituloModal}`;
+            let pubs = noticias.filter(n => n.publico && n.status === 'publicado');
+            let anos = [...new Set(pubs.map(n => new Date(n.dataPublicacao).getFullYear()))].sort((a,b)=>b-a);
+            let filtro = '<option value="todos">Todos os anos</option>' + anos.map(a=>`<option value="${a}">${a}</option>`).join('');
+            let html = `<div class="row mb-3"><div class="col-md-4"><label>Filtrar por ano</label><select class="form-select" id="filtroNoticiasAnoModal">${filtro}</select></div></div><div class="row" id="noticiasGridModal">`;
+            pubs.forEach(n => html += `<div class="col-md-6 col-lg-4 mb-4 noticia-item" data-ano="${new Date(n.dataPublicacao).getFullYear()}"><div class="dashboard-card h-100"><img src="${n.imagem}" class="card-img-top mb-3" style="height:180px; object-fit:cover;"><h5>${n.titulo}</h5><small class="text-muted">${formatarData(n.dataPublicacao)} • ${n.autor}</small><p class="mt-2">${n.resumo}</p><button class="btn btn-oaa-small mt-auto" onclick="verNoticiaDetalhe(${n.id})">Ler mais</button></div></div>`);
+            html += '</div>';
+            b.innerHTML = html;
+            setTimeout(() => document.getElementById('filtroNoticiasAnoModal')?.addEventListener('change', function() {
+                let ano = this.value;
+                document.querySelectorAll('#noticiasGridModal .noticia-item').forEach(item => item.style.display = (ano === 'todos' || item.dataset.ano == ano) ? 'block' : 'none');
+            }), 100);
+        }
+
+        function verNoticiaDetalhe(id) {
+            let n = noticias.find(n => n.id === id);
+            if (!n) return;
+            let modalId = `modalNoticiaDetalhe${id}`;
+            if (document.getElementById(modalId)) { new bootstrap.Modal(document.getElementById(modalId)).show(); return; }
+            let div = document.createElement('div');
+            div.innerHTML = `<div class="modal fade" id="${modalId}" tabindex="-1"><div class="modal-dialog modal-lg"><div class="modal-content"><div class="modal-header"><h5 class="modal-title">${n.titulo}</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><img src="${n.imagem}" class="img-fluid mb-3"><small class="text-muted">${formatarData(n.dataPublicacao)} • ${n.autor}</small><p class="mt-3">${n.conteudo}</p></div><div class="modal-footer"><button class="btn btn-outline-dark" data-bs-dismiss="modal">Fechar</button></div></div></div></div>`;
+            document.body.appendChild(div.firstElementChild);
+            new bootstrap.Modal(document.getElementById(modalId)).show();
+        }
+
+        function carregarModalEventos() {
+            let b = document.getElementById('modalEventosBody');
+            document.getElementById('modalEventosLabel').innerHTML = `<i class="fas fa-calendar-alt me-2"></i> ${conteudoPublico.eventos.tituloModal}`;
+            let pubs = eventos.filter(e => e.publico);
+            let tipos = [...new Set(pubs.map(e=>e.tipo))];
+            let html = `<div class="row mb-3"><div class="col-md-4"><label>Tipo</label><select class="form-select" id="filtroEventosTipoModal"><option value="todos">Todos</option>${tipos.map(t=>`<option value="${t}">${t}</option>`).join('')}</select></div><div class="col-md-4"><label>Status</label><select class="form-select" id="filtroEventosStatusModal"><option value="todos">Todos</option><option value="aberto">Aberto</option><option value="encerrado">Encerrado</option></select></div></div><div class="row" id="eventosGridModal">`;
+            pubs.forEach(e => html += `<div class="col-md-6 mb-4 evento-item" data-tipo="${e.tipo}" data-status="${e.status}"><div class="dashboard-card h-100"><h5><i class="fas fa-calendar-alt" style="color: var(--primary); margin-right: 10px;"></i> ${e.titulo}</h5><p><strong>Tipo:</strong> ${e.tipo}</p><p><strong>Data:</strong> ${e.data || e.dataInicio}</p><p><strong>Local:</strong> ${e.local}</p><p>${e.descricao.substring(0,80)}...</p><button class="btn btn-oaa-small" onclick="verEventoDetalhe(${e.id})">Detalhes</button></div></div>`);
+            html += '</div>';
+            b.innerHTML = html;
+            setTimeout(() => {
+                document.getElementById('filtroEventosTipoModal')?.addEventListener('change', filtrarEventosModal);
+                document.getElementById('filtroEventosStatusModal')?.addEventListener('change', filtrarEventosModal);
+            }, 100);
+        }
+
+        function filtrarEventosModal() {
+            let tipo = document.getElementById('filtroEventosTipoModal')?.value || 'todos';
+            let status = document.getElementById('filtroEventosStatusModal')?.value || 'todos';
+            document.querySelectorAll('#eventosGridModal .evento-item').forEach(item => {
+                let show = (tipo === 'todos' || item.dataset.tipo === tipo) && (status === 'todos' || item.dataset.status === status);
+                item.style.display = show ? 'block' : 'none';
+            });
+        }
+
+        function verEventoDetalhe(id) {
+            let e = eventos.find(e => e.id === id);
+            if (!e) return;
+            let modalId = `modalEventoDetalhe${id}`;
+            if (document.getElementById(modalId)) { new bootstrap.Modal(document.getElementById(modalId)).show(); return; }
+            let docsHtml = '';
+            if (e.documentos?.length) {
+                docsHtml = '<h6 class="mt-3">Documentos disponíveis:</h6><ul class="list-group">';
+                e.documentos.forEach(d => docsHtml += `<li class="list-group-item"><span><strong>${d.nome}</strong> (${d.tamanho}) - ${d.descricao}</span></li>`);
+                docsHtml += '</ul>';
+            }
+            let div = document.createElement('div');
+            div.innerHTML = `<div class="modal fade" id="${modalId}" tabindex="-1"><div class="modal-dialog modal-lg"><div class="modal-content"><div class="modal-header"><h5 class="modal-title">${e.titulo}</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><p><strong>Tipo:</strong> ${e.tipo}</p><p><strong>Data:</strong> ${e.data || e.dataInicio}</p><p><strong>Local:</strong> ${e.local}</p><p><strong>Descrição:</strong> ${e.descricao}</p>${e.vagas?`<p><strong>Vagas:</strong> ${e.inscritos}/${e.vagas}</p>`:''}${docsHtml}</div><div class="modal-footer"><button class="btn btn-outline-dark" data-bs-dismiss="modal">Fechar</button></div></div></div></div>`;
+            document.body.appendChild(div.firstElementChild);
+            new bootstrap.Modal(document.getElementById(modalId)).show();
+        }
+
+        function carregarModalDocumentos() {
+            let b = document.getElementById('modalDocumentosBody');
+            document.getElementById('modalDocumentosLabel').innerHTML = `<i class="fas fa-file-alt me-2"></i> ${conteudoPublico.documentos.tituloModal}`;
+            b.innerHTML = `<div class="table-responsive"><table class="table table-hover" id="tabelaDocumentosPublicosModal" style="width:100%"><thead><tr><th>Título</th><th>Categoria</th><th>Data</th><th>Tamanho</th><th>Downloads</th><th>Ação</th></tr></thead><tbody></tbody></table></div>`;
+            let tbody = $('#tabelaDocumentosPublicosModal tbody');
+            documentosOficiais.filter(d => d.publico).forEach(d => tbody.append(`<tr><td><strong>${d.titulo}</strong></td><td>${d.categoria}</td><td>${formatarData(d.dataPublicacao)}</td><td>${d.tamanho}</td><td>${d.downloads}</td><td><button class="btn btn-sm btn-oaa-small" onclick="baixarDocumentoOficial(${d.id})"><i class="fas fa-download"></i> Baixar</button></td></tr>`));
+            if ($.fn.DataTable.isDataTable('#tabelaDocumentosPublicosModal')) $('#tabelaDocumentosPublicosModal').DataTable().destroy();
+            $('#tabelaDocumentosPublicosModal').DataTable({ language: { url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/pt-PT.json' }, pageLength: 5, order: [[2,'desc']] });
+        }
+
+        function baixarDocumentoOficial(id) {
+            let d = documentosOficiais.find(d => d.id === id);
+            if (d) { d.downloads++; alert(`Download simulado: ${d.arquivo}`); carregarModalDocumentos(); }
+        }
+
+        function formatarData(data) {
+            if (!data) return '';
+            let d = new Date(data + 'T12:00:00');
+            return d.toLocaleDateString('pt-PT');
+        }
+
+        function atualizarConteudoPublicoFromCMS() {
+            document.getElementById('heroDescricao').innerText = conteudoPublico.inicio.descricao;
+            document.getElementById('heroImagem').src = conteudoPublico.inicio.imagem;
+            document.getElementById('enderecoPublico').innerHTML = `<i class="fas fa-map-marker-alt" style="color: var(--primary); margin-right: 12px;"></i> <strong>Endereço:</strong> ${conteudoPublico.contacto.endereco}`;
+            document.getElementById('telefonePublico').innerHTML = `<i class="fas fa-phone" style="color: var(--primary); margin-right: 12px;"></i> <strong>Telefone:</strong> ${conteudoPublico.contacto.telefone}`;
+            document.getElementById('emailPublico').innerHTML = `<i class="fas fa-envelope" style="color: var(--primary); margin-right: 12px;"></i> <strong>Email:</strong> ${conteudoPublico.contacto.email}`;
+            document.getElementById('horarioPublico').innerHTML = `<i class="fas fa-clock" style="color: var(--primary); margin-right: 12px;"></i> <strong>Horário:</strong> ${conteudoPublico.contacto.horario}`;
+            let mapa = document.querySelector('#mapaPublico iframe');
+            if (mapa) mapa.src = conteudoPublico.contacto.mapa;
+        }
+
+        // =====================================================================
+        // 4. AUTENTICAÇÃO E NAVEGAÇÃO
+        // =====================================================================
+        function mostrarLogin() { document.getElementById('landingPage').style.display = 'none'; document.getElementById('loginScreen').style.display = 'flex'; document.getElementById('portalContainer').style.display = 'none'; }
+        function voltarParaSite() { document.getElementById('loginScreen').style.display = 'none'; document.getElementById('portalContainer').style.display = 'none'; document.getElementById('landingPage').style.display = 'block'; window.scrollTo(0,0); }
+        function realizarLogin() {
+            let email = document.getElementById('email').value, senha = document.getElementById('password').value;
+            let usuario = usuarios.find(u => u.email === email && u.senha === senha && u.ativo);
+            if (usuario) { currentUser = usuario; localStorage.setItem('oaaCurrentUser', JSON.stringify({id:usuario.id, email, role:usuario.role})); entrarNoPortal(); }
+            else alert('Credenciais inválidas.');
+        }
+        function entrarNoPortal() {
+            document.getElementById('landingPage').style.display = 'none'; document.getElementById('loginScreen').style.display = 'none'; document.getElementById('portalContainer').style.display = 'flex';
+            atualizarInterfaceUsuario(); carregarMenu(); carregarDashboard();
+        }
+        function atualizarInterfaceUsuario() {
+            document.getElementById('userName').textContent = currentUser.nome; document.getElementById('userEmail').textContent = currentUser.email;
+            document.getElementById('userAvatar').textContent = currentUser.avatar || currentUser.nome.charAt(0); document.getElementById('topUserName').textContent = currentUser.nome.split(' ')[0];
+            if (currentUser.role === 'admin') { document.getElementById('userRole').textContent = 'Administrador do Sistema'; document.getElementById('userAvatar').style.background = 'var(--gradient-gold)'; document.getElementById('userAvatar').style.color = 'var(--accent)'; }
+            else { document.getElementById('userRole').textContent = `${currentUser.situacao} - ${currentUser.cedula}`; document.getElementById('userAvatar').style.background = 'linear-gradient(145deg, #2C3E50, #1E2B38)'; }
+        }
+        function logout() { if (confirm('Sair do sistema?')) { currentUser = null; localStorage.removeItem('oaaCurrentUser'); voltarParaSite(); document.getElementById('email').value = ''; document.getElementById('password').value = ''; } }
+        function verificarUsuarioSalvo() {
+            let saved = localStorage.getItem('oaaCurrentUser');
+            if (saved) { let user = JSON.parse(saved), u = usuarios.find(u => u.id === user.id); if (u) { currentUser = u; entrarNoPortal(); } }
+        }
+        function toggleSidebar() { document.getElementById('sidebar').classList.toggle('show'); }
+
+        // =====================================================================
+        // 5. MENU E DASHBOARD
+        // =====================================================================
+        function carregarMenu() {
+            let menu = document.getElementById('mainMenu');
+            if (currentUser.role === 'admin') {
+                menu.innerHTML = `<li class="nav-item"><a class="nav-link active" href="#" onclick="loadPage('dashboard')"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#" onclick="loadPage('conteudo-publico')"><i class="fas fa-globe"></i> Conteúdo Público (CMS)</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#" onclick="loadPage('advogados')"><i class="fas fa-user-tie"></i> Gestão de Advogados</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#" onclick="loadPage('processos')"><i class="fas fa-folder-open"></i> Gestão de Processos</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#" onclick="loadPage('quotas')"><i class="fas fa-credit-card"></i> Gestão de Quotas</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#" onclick="loadPage('assistencias')"><i class="fas fa-map-marker-alt"></i> Mapa de Assistências</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#" onclick="loadPage('administradores')"><i class="fas fa-users-cog"></i> Gestão de Administradores</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#" data-bs-toggle="collapse" data-bs-target="#submenuComunicacao"><i class="fas fa-bullhorn"></i> Comunicação Institucional <i class="fas fa-chevron-down ms-auto"></i></a><div class="collapse" id="submenuComunicacao"><ul class="nav flex-column ms-3"><li class="nav-item"><a class="nav-link" href="#" onclick="loadPage('noticias-admin')"><i class="fas fa-newspaper"></i> Notícias</a></li><li class="nav-item"><a class="nav-link" href="#" onclick="loadPage('comunicados-admin')"><i class="fas fa-bullhorn"></i> Comunicados</a></li><li class="nav-item"><a class="nav-link" href="#" onclick="loadPage('eventos-admin')"><i class="fas fa-calendar-alt"></i> Eventos</a></li><li class="nav-item"><a class="nav-link" href="#" onclick="loadPage('documentos-admin')"><i class="fas fa-file-alt"></i> Documentos</a></li></ul></div></li>
+                    <li class="nav-item"><a class="nav-link" href="#" onclick="loadPage('relatorios')"><i class="fas fa-chart-bar"></i> Relatórios</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#" onclick="loadPage('configuracoes')"><i class="fas fa-cogs"></i> Configurações</a></li>`;
+            } else {
+                menu.innerHTML = `<li class="nav-item"><a class="nav-link active" href="#" onclick="loadPage('dashboard')"><i class="fas fa-tachometer-alt"></i> Meu Dashboard</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#" onclick="loadPage('meus-processos')"><i class="fas fa-folder"></i> Meus Processos</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#" onclick="loadPage('minhas-quotas')"><i class="fas fa-file-invoice-dollar"></i> Minhas Quotas</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#" onclick="loadPage('minhas-assistencias')"><i class="fas fa-map-marker-alt"></i> Minhas Assistências</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#" data-bs-toggle="collapse" data-bs-target="#submenuAdv"><i class="fas fa-bullhorn"></i> Comunicação</a><div class="collapse" id="submenuAdv"><ul class="nav flex-column ms-3"><li class="nav-item"><a class="nav-link" href="#" onclick="loadPage('noticias-adv')"><i class="fas fa-newspaper"></i> Notícias</a></li><li class="nav-item"><a class="nav-link" href="#" onclick="loadPage('comunicados-adv')"><i class="fas fa-bullhorn"></i> Comunicados</a></li><li class="nav-item"><a class="nav-link" href="#" onclick="loadPage('eventos-adv')"><i class="fas fa-calendar-alt"></i> Eventos</a></li><li class="nav-item"><a class="nav-link" href="#" onclick="loadPage('documentos-adv')"><i class="fas fa-file-alt"></i> Documentos</a></li></ul></div></li>
+                    <li class="nav-item"><a class="nav-link" href="#" onclick="loadPage('perfil')"><i class="fas fa-user-circle"></i> Meu Perfil</a></li>`;
+            }
+        }
+
+        function loadPage(page) {
+            let title = document.getElementById('pageTitle'), content = document.getElementById('contentArea');
+            document.querySelectorAll('.sidebar .nav-link').forEach(l => l.classList.remove('active'));
+            if (event?.target) event.target.classList.add('active');
+            if (window.innerWidth < 992) document.getElementById('sidebar').classList.remove('show');
+            content.innerHTML = `<div class="text-center py-5"><div class="spinner-border" style="color: var(--primary);"></div></div>`;
+            setTimeout(() => {
+                switch(page) {
+                    case 'dashboard': title.textContent = 'Dashboard'; carregarDashboard(); break;
+                    case 'conteudo-publico': title.textContent = 'Conteúdo Público (CMS)'; carregarPaginaConteudoPublico(); break;
+                    case 'advogados': title.textContent = 'Gestão de Advogados'; carregarPaginaAdvogados(); break;
+                    case 'processos': title.textContent = 'Gestão de Processos'; carregarPaginaProcessos(); break;
+                    case 'quotas': title.textContent = 'Gestão de Quotas'; carregarPaginaQuotas(); break;
+                    case 'assistencias': title.textContent = 'Mapa de Assistências'; carregarPaginaAssistencias(); break;
+                    case 'administradores': title.textContent = 'Gestão de Administradores'; carregarPaginaAdministradores(); break;
+                    case 'noticias-admin': title.textContent = 'Gestão de Notícias'; carregarPaginaNoticiasAdmin(); break;
+                    case 'comunicados-admin': title.textContent = 'Gestão de Comunicados'; carregarPaginaComunicadosAdmin(); break;
+                    case 'eventos-admin': title.textContent = 'Gestão de Eventos'; carregarPaginaEventosAdmin(); break;
+                    case 'documentos-admin': title.textContent = 'Gestão de Documentos'; carregarPaginaDocumentosAdmin(); break;
+                    case 'relatorios': title.textContent = 'Relatórios'; carregarPaginaRelatorios(); break;
+                    case 'configuracoes': title.textContent = 'Configurações'; carregarPaginaConfiguracoes(); break;
+                    case 'meus-processos': title.textContent = 'Meus Processos'; carregarMeusProcessos(); break;
+                    case 'minhas-quotas': title.textContent = 'Minhas Quotas'; carregarMinhasQuotas(); break;
+                    case 'minhas-assistencias': title.textContent = 'Minhas Assistências'; carregarMinhasAssistencias(); break;
+                    case 'noticias-adv': title.textContent = 'Notícias'; carregarNoticiasAdvogado(); break;
+                    case 'comunicados-adv': title.textContent = 'Comunicados'; carregarComunicadosAdvogado(); break;
+                    case 'eventos-adv': title.textContent = 'Eventos'; carregarEventosAdvogado(); break;
+                    case 'documentos-adv': title.textContent = 'Documentos'; carregarDocumentosAdvogado(); break;
+                    case 'perfil': title.textContent = 'Meu Perfil'; carregarPaginaPerfil(); break;
+                    default: carregarDashboard();
+                }
+                content.classList.add('fade-in');
+                setTimeout(() => content.classList.remove('fade-in'), 500);
+            }, 300);
+        }
+
+        function carregarDashboard() {
+            let c = document.getElementById('contentArea');
+            if (currentUser.role === 'admin') {
+                c.innerHTML = `<div class="row mb-4"><div class="col-xl-3 col-md-6 mb-4"><div class="dashboard-card text-center"><div class="card-icon mx-auto"><i class="fas fa-user-tie"></i></div><div class="card-stat">${usuarios.filter(u=>u.role==='advogado'&&u.ativo).length}</div><div class="card-label">Advogados Ativos</div></div></div><div class="col-xl-3 col-md-6 mb-4"><div class="dashboard-card text-center"><div class="card-icon mx-auto"><i class="fas fa-folder-open"></i></div><div class="card-stat">${processos.filter(p=>p.status==='ativo').length}</div><div class="card-label">Processos Ativos</div></div></div><div class="col-xl-3 col-md-6 mb-4"><div class="dashboard-card text-center"><div class="card-icon mx-auto"><i class="fas fa-map-marker-alt"></i></div><div class="card-stat">${assistencias.length}</div><div class="card-label">Assistências</div></div></div><div class="col-xl-3 col-md-6 mb-4"><div class="dashboard-card text-center"><div class="card-icon mx-auto"><i class="fas fa-newspaper"></i></div><div class="card-stat">${noticias.filter(n=>n.publico).length}</div><div class="card-label">Notícias Publicadas</div></div></div></div><div class="row"><div class="col-lg-8"><div class="dashboard-card"><h5 class="mb-4">Ações Rápidas</h5><div class="row g-3"><div class="col-md-6"><button class="btn btn-oaa w-100" onclick="loadPage('conteudo-publico')"><i class="fas fa-edit me-2"></i> Editar Site</button></div><div class="col-md-6"><button class="btn btn-outline-dark w-100" onclick="loadPage('advogados')"><i class="fas fa-users me-2"></i> Gerir Advogados</button></div><div class="col-md-6"><button class="btn btn-outline-dark w-100" onclick="abrirModalAddAssistencia()"><i class="fas fa-plus me-2"></i> Nova Assistência</button></div><div class="col-md-6"><button class="btn btn-outline-dark w-100" onclick="abrirModalAddNoticiaAdmin()"><i class="fas fa-plus me-2"></i> Nova Notícia</button></div></div></div></div><div class="col-lg-4"><div class="dashboard-card"><h5 class="mb-4">Últimas Notícias</h5><div class="list-group list-group-flush">${noticias.filter(n=>n.publico).slice(0,3).map(n=>`<div class="list-group-item px-0"><small class="text-muted">${formatarData(n.dataPublicacao)}</small><p class="mb-1 fw-bold">${n.titulo}</p></div>`).join('')}</div><button class="btn btn-sm btn-oaa-small mt-3 w-100" onclick="loadPage('noticias-admin')">Ver Todas</button></div></div></div>`;
+            } else {
+                let meus = processos.filter(p => p.advogadoId === currentUser.id);
+                let meusQuotas = quotas.filter(q => q.advogadoId === currentUser.id);
+                c.innerHTML = `<div class="row mb-4"><div class="col-xl-3 col-md-6 mb-4"><div class="dashboard-card text-center"><div class="card-icon mx-auto"><i class="fas fa-folder-open"></i></div><div class="card-stat">${meus.filter(p=>p.status==='ativo').length}</div><div class="card-label">Processos Ativos</div></div></div><div class="col-xl-3 col-md-6 mb-4"><div class="dashboard-card text-center"><div class="card-icon mx-auto"><i class="fas fa-check-circle"></i></div><div class="card-stat">${meusQuotas.filter(q=>q.pago).length}</div><div class="card-label">Quotas Pagas</div></div></div><div class="col-xl-3 col-md-6 mb-4"><div class="dashboard-card text-center"><div class="card-icon mx-auto"><i class="fas fa-star"></i></div><div class="card-stat">${currentUser.especialidade||'Geral'}</div><div class="card-label">Especialidade</div></div></div><div class="col-xl-3 col-md-6 mb-4"><div class="dashboard-card text-center"><div class="card-icon mx-auto"><i class="fas fa-id-card"></i></div><div class="card-stat">${currentUser.cedula||'---'}</div><div class="card-label">Cédula</div></div></div></div><div class="row"><div class="col-lg-8"><div class="dashboard-card"><h5 class="mb-4">Meus Processos Recentes</h5><div class="table-responsive"><table class="table"><thead><tr><th>Nº Processo</th><th>Cliente</th><th>Tipo</th><th>Data</th><th>Status</th></tr></thead><tbody>${meus.slice(0,5).map(p=>`<tr><td>${p.numero}</td><td>${p.cliente}</td><td>${p.tipo}</td><td>${formatarData(p.data)}</td><td><span class="badge" style="background: var(--primary); color: var(--accent);">${p.status}</span></td></tr>`).join('')}</tbody></table></div></div></div><div class="col-lg-4"><div class="dashboard-card"><h5 class="mb-4">Comunicação</h5><div class="list-group list-group-flush"><div class="list-group-item px-0"><i class="fas fa-newspaper" style="color: var(--primary); margin-right: 10px;"></i> Última notícia: ${noticias.filter(n=>n.publico).length?noticias.filter(n=>n.publico)[0].titulo:'Nenhuma'}</div><div class="list-group-item px-0"><i class="fas fa-calendar-alt" style="color: var(--primary); margin-right: 10px;"></i> Próximo evento: ${eventos.filter(e=>e.publico&&e.status==='aberto').length?eventos.filter(e=>e.publico&&e.status==='aberto')[0].titulo:'Nenhum'}</div></div><div class="mt-3 d-grid gap-2"><button class="btn btn-outline-dark btn-sm" onclick="loadPage('noticias-adv')">Ver Notícias</button><button class="btn btn-outline-dark btn-sm" onclick="loadPage('eventos-adv')">Ver Eventos</button></div></div></div></div>`;
+            }
+        }
+
+        // =====================================================================
+        // 6. PÁGINAS DO ADMINISTRADOR (CRUDs completos)
+        // =====================================================================
+
+        // ---------- 6.1. CMS (já implementado) ----------
+        function carregarPaginaConteudoPublico() {
+            const content = document.getElementById('contentArea');
+            content.innerHTML = `
+                <div class="dashboard-card">
+                    <h4 class="mb-4">Gerenciar Conteúdo do Site Público</h4>
+                    <div class="accordion" id="accordionConteudo">
+                        <!-- INÍCIO -->
+                        <div class="accordion-item">
+                            <h2 class="accordion-header"><button class="accordion-button" data-bs-toggle="collapse" data-bs-target="#collapseInicio"><i class="fas fa-home me-2"></i> Seção INÍCIO</button></h2>
+                            <div id="collapseInicio" class="accordion-collapse collapse show" data-bs-parent="#accordionConteudo">
+                                <div class="accordion-body"><form id="formInicio" onsubmit="salvarConteudoPublico('inicio', event)">
+                                    <div class="mb-3"><label class="form-label">Título Principal</label><input type="text" class="form-control" id="tituloInicio" value="${conteudoPublico.inicio.titulo}" required></div>
+                                    <div class="mb-3"><label class="form-label">Subtítulo</label><input type="text" class="form-control" id="subtituloInicio" value="${conteudoPublico.inicio.subtitulo}" required></div>
+                                    <div class="mb-3"><label class="form-label">Descrição</label><textarea class="form-control" id="descricaoInicio" rows="4" required>${conteudoPublico.inicio.descricao}</textarea></div>
+                                    <div class="mb-3"><label class="form-label">URL da Imagem</label><input type="text" class="form-control" id="imagemInicio" value="${conteudoPublico.inicio.imagem}"></div>
+                                    <button type="submit" class="btn btn-oaa"><i class="fas fa-save me-2"></i> Salvar</button>
+                                </form></div>
+                            </div>
+                        </div>
+                        <!-- SOBRE -->
+                        <div class="accordion-item">
+                            <h2 class="accordion-header"><button class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#collapseSobre"><i class="fas fa-info-circle me-2"></i> Seção SOBRE</button></h2>
+                            <div id="collapseSobre" class="accordion-collapse collapse" data-bs-parent="#accordionConteudo">
+                                <div class="accordion-body"><form id="formSobre" onsubmit="salvarConteudoPublico('sobre', event)">
+                                    <div class="mb-3"><label class="form-label">Missão</label><textarea class="form-control" id="missaoSobre" rows="3" required>${conteudoPublico.sobre.missao}</textarea></div>
+                                    <div class="mb-3"><label class="form-label">Visão</label><textarea class="form-control" id="visaoSobre" rows="3" required>${conteudoPublico.sobre.visao}</textarea></div>
+                                    <div class="mb-3"><label class="form-label">Valores</label><textarea class="form-control" id="valoresSobre" rows="3" required>${conteudoPublico.sobre.valores}</textarea></div>
+                                    <div class="mb-3"><label class="form-label">História</label><textarea class="form-control" id="historiaSobre" rows="5" required>${conteudoPublico.sobre.historia}</textarea></div>
+                                    <button type="submit" class="btn btn-oaa"><i class="fas fa-save me-2"></i> Salvar</button>
+                                </form></div>
+                            </div>
+                        </div>
+                        <!-- CONTACTO -->
+                        <div class="accordion-item">
+                            <h2 class="accordion-header"><button class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#collapseContacto"><i class="fas fa-address-book me-2"></i> Seção CONTACTO</button></h2>
+                            <div id="collapseContacto" class="accordion-collapse collapse" data-bs-parent="#accordionConteudo">
+                                <div class="accordion-body"><form id="formContactoCMS" onsubmit="salvarConteudoPublico('contacto', event)">
+                                    <div class="row"><div class="col-md-6 mb-3"><label>Endereço</label><input type="text" class="form-control" id="enderecoContacto" value="${conteudoPublico.contacto.endereco}" required></div>
+                                    <div class="col-md-6 mb-3"><label>Telefone</label><input type="text" class="form-control" id="telefoneContacto" value="${conteudoPublico.contacto.telefone}" required></div>
+                                    <div class="col-md-6 mb-3"><label>Email</label><input type="email" class="form-control" id="emailContactoCMS" value="${conteudoPublico.contacto.email}" required></div>
+                                    <div class="col-md-6 mb-3"><label>Horário</label><input type="text" class="form-control" id="horarioContacto" value="${conteudoPublico.contacto.horario}" required></div>
+                                    <div class="col-md-12 mb-3"><label>Embed do Mapa (iframe src)</label><input type="text" class="form-control" id="mapaContacto" value="${conteudoPublico.contacto.mapa}" required></div></div>
+                                    <button type="submit" class="btn btn-oaa"><i class="fas fa-save me-2"></i> Salvar</button>
+                                </form></div>
+                            </div>
+                        </div>
+                        <!-- SERVIÇOS -->
+                        <div class="accordion-item">
+                            <h2 class="accordion-header"><button class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#collapseServicos"><i class="fas fa-cogs me-2"></i> Seção SERVIÇOS</button></h2>
+                            <div id="collapseServicos" class="accordion-collapse collapse" data-bs-parent="#accordionConteudo">
+                                <div class="accordion-body"><form id="formServicos" onsubmit="salvarConteudoPublico('servicos', event)">
+                                    <div class="mb-3"><label class="form-label">Título do Modal</label><input type="text" class="form-control" id="tituloModalServicos" value="${conteudoPublico.servicos.tituloModal}" required></div>
+                                    <hr>${conteudoPublico.servicos.cards.map((card, idx)=>`
+                                    <h5>Card ${idx+1}</h5>
+                                    <div class="row"><div class="col-md-6 mb-3"><label>Título</label><input type="text" class="form-control" id="servicoTitulo${idx}" value="${card.titulo}" required></div>
+                                    <div class="col-md-6 mb-3"><label>Ícone (classe FA)</label><input type="text" class="form-control" id="servicoIcone${idx}" value="${card.icone}" required></div>
+                                    <div class="col-md-12 mb-3"><label>Descrição Curta</label><textarea class="form-control" id="servicoDescCurta${idx}" rows="2" required>${card.descricaoCurta}</textarea></div>
+                                    <div class="col-md-6 mb-3"><label>URL Imagem (modal)</label><input type="text" class="form-control" id="servicoImagem${idx}" value="${card.imagem}" required></div>
+                                    <div class="col-md-12 mb-3"><label>Descrição Longa</label><textarea class="form-control" id="servicoDescLonga${idx}" rows="3" required>${card.descricaoLonga}</textarea></div></div>
+                                    ${idx<2?'<hr>':''}`).join('')}
+                                    <button type="submit" class="btn btn-oaa"><i class="fas fa-save me-2"></i> Salvar</button>
+                                </form></div>
+                            </div>
+                        </div>
+                        <!-- GALERIA -->
+                        <div class="accordion-item">
+                            <h2 class="accordion-header"><button class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#collapseGaleria"><i class="fas fa-images me-2"></i> Seção GALERIA</button></h2>
+                            <div id="collapseGaleria" class="accordion-collapse collapse" data-bs-parent="#accordionConteudo">
+                                <div class="accordion-body"><form id="formGaleria" onsubmit="salvarConteudoPublico('galeria', event)">
+                                    <div class="mb-3"><label class="form-label">Título do Modal</label><input type="text" class="form-control" id="tituloModalGaleria" value="${conteudoPublico.galeria.tituloModal}" required></div>
+                                    <p class="text-muted">Para editar as imagens, utilize a área de <strong>Gestão de Galeria</strong> (em desenvolvimento).</p>
+                                    <button type="submit" class="btn btn-oaa"><i class="fas fa-save me-2"></i> Salvar Título</button>
+                                </form></div>
+                            </div>
+                        </div>
+                        <!-- NOTÍCIAS -->
+                        <div class="accordion-item">
+                            <h2 class="accordion-header"><button class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#collapseNoticias"><i class="fas fa-newspaper me-2"></i> Seção NOTÍCIAS</button></h2>
+                            <div id="collapseNoticias" class="accordion-collapse collapse" data-bs-parent="#accordionConteudo">
+                                <div class="accordion-body"><form id="formNoticias" onsubmit="salvarConteudoPublico('noticias', event)">
+                                    <div class="mb-3"><label class="form-label">Título do Modal</label><input type="text" class="form-control" id="tituloModalNoticias" value="${conteudoPublico.noticias.tituloModal}" required></div>
+                                    <p class="text-muted">Gerir notícias em <strong>Comunicação → Notícias</strong>.</p>
+                                    <button type="submit" class="btn btn-oaa"><i class="fas fa-save me-2"></i> Salvar Título</button>
+                                </form></div>
+                            </div>
+                        </div>
+                        <!-- EVENTOS -->
+                        <div class="accordion-item">
+                            <h2 class="accordion-header"><button class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#collapseEventos"><i class="fas fa-calendar-alt me-2"></i> Seção EVENTOS</button></h2>
+                            <div id="collapseEventos" class="accordion-collapse collapse" data-bs-parent="#accordionConteudo">
+                                <div class="accordion-body"><form id="formEventos" onsubmit="salvarConteudoPublico('eventos', event)">
+                                    <div class="mb-3"><label class="form-label">Título do Modal</label><input type="text" class="form-control" id="tituloModalEventos" value="${conteudoPublico.eventos.tituloModal}" required></div>
+                                    <p class="text-muted">Gerir eventos em <strong>Comunicação → Eventos</strong>.</p>
+                                    <button type="submit" class="btn btn-oaa"><i class="fas fa-save me-2"></i> Salvar Título</button>
+                                </form></div>
+                            </div>
+                        </div>
+                        <!-- DOCUMENTOS -->
+                        <div class="accordion-item">
+                            <h2 class="accordion-header"><button class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#collapseDocumentos"><i class="fas fa-file-alt me-2"></i> Seção DOCUMENTOS</button></h2>
+                            <div id="collapseDocumentos" class="accordion-collapse collapse" data-bs-parent="#accordionConteudo">
+                                <div class="accordion-body"><form id="formDocumentos" onsubmit="salvarConteudoPublico('documentos', event)">
+                                    <div class="mb-3"><label class="form-label">Título do Modal</label><input type="text" class="form-control" id="tituloModalDocumentos" value="${conteudoPublico.documentos.tituloModal}" required></div>
+                                    <p class="text-muted">Gerir documentos em <strong>Comunicação → Documentos Oficiais</strong>.</p>
+                                    <button type="submit" class="btn btn-oaa"><i class="fas fa-save me-2"></i> Salvar Título</button>
+                                </form></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function salvarConteudoPublico(secao, event) {
+            event.preventDefault();
+            switch(secao) {
+                case 'inicio':
+                    conteudoPublico.inicio = {
+                        titulo: document.getElementById('tituloInicio').value,
+                        subtitulo: document.getElementById('subtituloInicio').value,
+                        descricao: document.getElementById('descricaoInicio').value,
+                        imagem: document.getElementById('imagemInicio').value
+                    };
+                    break;
+                case 'sobre':
+                    conteudoPublico.sobre = {
+                        missao: document.getElementById('missaoSobre').value,
+                        visao: document.getElementById('visaoSobre').value,
+                        valores: document.getElementById('valoresSobre').value,
+                        historia: document.getElementById('historiaSobre').value
+                    };
+                    break;
+                case 'contacto':
+                    conteudoPublico.contacto = {
+                        endereco: document.getElementById('enderecoContacto').value,
+                        telefone: document.getElementById('telefoneContacto').value,
+                        email: document.getElementById('emailContactoCMS').value,
+                        horario: document.getElementById('horarioContacto').value,
+                        mapa: document.getElementById('mapaContacto').value
+                    };
+                    break;
+                case 'servicos':
+                    conteudoPublico.servicos.tituloModal = document.getElementById('tituloModalServicos').value;
+                    for (let i = 0; i < conteudoPublico.servicos.cards.length; i++) {
+                        conteudoPublico.servicos.cards[i].titulo = document.getElementById(`servicoTitulo${i}`).value;
+                        conteudoPublico.servicos.cards[i].icone = document.getElementById(`servicoIcone${i}`).value;
+                        conteudoPublico.servicos.cards[i].descricaoCurta = document.getElementById(`servicoDescCurta${i}`).value;
+                        conteudoPublico.servicos.cards[i].imagem = document.getElementById(`servicoImagem${i}`).value;
+                        conteudoPublico.servicos.cards[i].descricaoLonga = document.getElementById(`servicoDescLonga${i}`).value;
+                    }
+                    break;
+                case 'galeria':
+                    conteudoPublico.galeria.tituloModal = document.getElementById('tituloModalGaleria').value;
+                    break;
+                case 'noticias':
+                    conteudoPublico.noticias.tituloModal = document.getElementById('tituloModalNoticias').value;
+                    break;
+                case 'eventos':
+                    conteudoPublico.eventos.tituloModal = document.getElementById('tituloModalEventos').value;
+                    break;
+                case 'documentos':
+                    conteudoPublico.documentos.tituloModal = document.getElementById('tituloModalDocumentos').value;
+                    break;
+            }
+            atualizarConteudoPublicoFromCMS();
+            carregarConteudoModaisPublicos();
+            alert('Conteúdo atualizado!');
+        }
+
+        // ---------- 6.2. GESTÃO DE ADVOGADOS ----------
+        function carregarPaginaAdvogados() {
+            const content = document.getElementById('contentArea');
+            const advogados = usuarios.filter(u => u.role === 'advogado');
+            content.innerHTML = `
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h4>Gestão de Advogados</h4>
+                    <button class="btn btn-oaa" onclick="abrirModalAddAdvogado()"><i class="fas fa-user-plus me-2"></i> Novo Advogado</button>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-4"><label>Filtrar por situação</label><select class="form-select" id="filtroSituacaoAdvogado"><option value="todos">Todos</option><option value="Advogado">Advogado</option><option value="Advogado Estagiário">Advogado Estagiário</option></select></div>
+                    <div class="col-md-4"><label>Filtrar por status</label><select class="form-select" id="filtroStatusAdvogado"><option value="todos">Todos</option><option value="ativo">Ativo</option><option value="inativo">Inativo</option></select></div>
+                </div>
+                <div class="dashboard-card">
+                    <div class="table-responsive">
+                        <table class="table table-hover" id="tabelaAdvogados">
+                            <thead><tr><th>Nome</th><th>Situação</th><th>Cédula</th><th>Província</th><th>Status</th><th>Ações</th></tr></thead>
+                            <tbody id="tbodyAdvogados"></tbody>
+                        </table>
+                    </div>
+                </div>
+            `;
+            atualizarTabelaAdvogados(advogados);
+            document.getElementById('filtroSituacaoAdvogado').addEventListener('change', filtrarAdvogados);
+            document.getElementById('filtroStatusAdvogado').addEventListener('change', filtrarAdvogados);
+        }
+
+        function atualizarTabelaAdvogados(lista) {
+            const tbody = document.getElementById('tbodyAdvogados');
+            tbody.innerHTML = lista.map(adv => `
+                <tr>
+                    <td><div class="d-flex align-items-center"><div class="user-avatar me-3" style="width:40px; height:40px; font-size:1rem; background:${adv.ativo ? 'linear-gradient(135deg,#28a745,#1e7e34)' : 'linear-gradient(135deg,#6c757d,#495057)'};">${adv.avatar || adv.nome.charAt(0)}</div><div><strong>${adv.nome}</strong><br><small>${adv.email}</small></div></div></td>
+                    <td>${adv.situacao || 'Advogado'}</td>
+                    <td>${adv.cedula || '---'}</td>
+                    <td>${adv.provincia || '---'}</td>
+                    <td><span class="badge ${adv.ativo ? 'bg-success' : 'bg-danger'}">${adv.ativo ? 'Ativo' : 'Bloqueado'}</span></td>
+                    <td>
+                        <button class="btn btn-sm btn-outline-dark me-1" onclick="editarAdvogado(${adv.id})"><i class="fas fa-edit"></i></button>
+                        <button class="btn btn-sm ${adv.ativo ? 'btn-outline-danger' : 'btn-outline-success'}" onclick="${adv.ativo ? 'bloquearAdvogado' : 'ativarAdvogado'}(${adv.id})"><i class="fas ${adv.ativo ? 'fa-ban' : 'fa-check'}"></i></button>
+                        <button class="btn btn-sm btn-outline-info" onclick="verHistoricoAdvogado(${adv.id})"><i class="fas fa-history"></i></button>
+                    </td>
+                </tr>
+            `).join('');
+            if ($.fn.DataTable.isDataTable('#tabelaAdvogados')) $('#tabelaAdvogados').DataTable().destroy();
+            $('#tabelaAdvogados').DataTable({ language: { url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/pt-PT.json' }, pageLength: 10 });
+        }
+
+        function filtrarAdvogados() {
+            let s = document.getElementById('filtroSituacaoAdvogado').value;
+            let st = document.getElementById('filtroStatusAdvogado').value;
+            let adv = usuarios.filter(u => u.role === 'advogado');
+            if (s !== 'todos') adv = adv.filter(a => a.situacao === s);
+            if (st === 'ativo') adv = adv.filter(a => a.ativo === true);
+            else if (st === 'inativo') adv = adv.filter(a => a.ativo === false);
+            atualizarTabelaAdvogados(adv);
+        }
+
+        function abrirModalAddAdvogado(id = null) {
+            const isEdit = id !== null;
+            const adv = isEdit ? usuarios.find(u => u.id === id) : null;
+            const modalHTML = `
+                <div class="modal fade" id="modalAddAdvogado" tabindex="-1">
+                    <div class="modal-dialog modal-lg"><div class="modal-content">
+                        <div class="modal-header" style="background: var(--gradient-dark); color: var(--primary);">
+                            <h5 class="modal-title"><i class="fas fa-user-plus me-2"></i> ${isEdit ? 'Editar' : 'Novo'} Advogado</h5>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="formAddAdvogado">
+                                <div class="row">
+                                    <div class="col-md-6 mb-3"><label class="form-label">Nome Completo *</label><input type="text" class="form-control" id="nomeAdvogado" value="${adv?.nome||''}" required></div>
+                                    <div class="col-md-6 mb-3"><label class="form-label">Nº Cédula *</label><input type="text" class="form-control" id="cedulaAdvogado" value="${adv?.cedula||''}" required></div>
+                                    <div class="col-md-6 mb-3"><label class="form-label">Email *</label><input type="email" class="form-control" id="emailAdvogado" value="${adv?.email||''}" required></div>
+                                    <div class="col-md-6 mb-3"><label class="form-label">Província *</label><input type="text" class="form-control" id="provinciaAdvogado" value="${adv?.provincia||''}" required></div>
+                                    <div class="col-md-6 mb-3"><label class="form-label">Situação *</label><select class="form-control" id="situacaoAdvogado"><option value="Advogado" ${adv?.situacao==='Advogado'?'selected':''}>Advogado</option><option value="Advogado Estagiário" ${adv?.situacao==='Advogado Estagiário'?'selected':''}>Advogado Estagiário</option></select></div>
+                                    <div class="col-md-6 mb-3"><label class="form-label">Especialidade</label><input type="text" class="form-control" id="especialidadeAdvogado" value="${adv?.especialidade||''}"></div>
+                                    <div class="col-md-6 mb-3"><label class="form-label">Telefone</label><input type="text" class="form-control" id="telefoneAdvogado" value="${adv?.telefone||''}"></div>
+                                    <div class="col-md-6 mb-3"><label class="form-label">Endereço</label><input type="text" class="form-control" id="enderecoAdvogado" value="${adv?.endereco||''}"></div>
+                                    ${!isEdit ? `<div class="col-md-6 mb-3"><label class="form-label">Senha Inicial *</label><input type="password" class="form-control" id="senhaAdvogado" required></div>` : ''}
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-outline-dark" data-bs-dismiss="modal">Cancelar</button>
+                            <button type="button" class="btn btn-oaa" onclick="salvarAdvogado(${id})">${isEdit ? 'Atualizar' : 'Cadastrar'}</button>
+                        </div>
+                    </div></div>
+                </div>
+            `;
+            const modalDiv = document.createElement('div');
+            modalDiv.innerHTML = modalHTML;
+            document.body.appendChild(modalDiv);
+            new bootstrap.Modal(document.getElementById('modalAddAdvogado')).show();
+            modalDiv.addEventListener('hidden.bs.modal', () => modalDiv.remove());
+        }
+
+        function salvarAdvogado(id = null) {
+            const nome = document.getElementById('nomeAdvogado').value;
+            const email = document.getElementById('emailAdvogado').value;
+            const cedula = document.getElementById('cedulaAdvogado').value;
+            const provincia = document.getElementById('provinciaAdvogado').value;
+            const situacao = document.getElementById('situacaoAdvogado').value;
+            if (!nome || !email || !cedula || !provincia) { alert('Preencha campos obrigatórios!'); return; }
+            if (id) {
+                const index = usuarios.findIndex(u => u.id === id);
+                if (index !== -1) {
+                    usuarios[index] = { ...usuarios[index], nome, email, cedula, provincia, situacao,
+                        especialidade: document.getElementById('especialidadeAdvogado').value,
+                        telefone: document.getElementById('telefoneAdvogado').value,
+                        endereco: document.getElementById('enderecoAdvogado').value
+                    };
+                }
+            } else {
+                const senha = document.getElementById('senhaAdvogado').value;
+                if (!senha) { alert('Senha obrigatória!'); return; }
+                const novoId = usuarios.length ? Math.max(...usuarios.map(u=>u.id)) + 1 : 1;
+                usuarios.push({ id: novoId, nome, email, senha, role: 'advogado', situacao, cedula, provincia,
+                    especialidade: document.getElementById('especialidadeAdvogado').value || 'Geral',
+                    avatar: nome.charAt(0).toUpperCase(),
+                    telefone: document.getElementById('telefoneAdvogado').value || '',
+                    endereco: document.getElementById('enderecoAdvogado').value || '',
+                    ativo: true, dataRegistro: new Date().toISOString().split('T')[0]
+                });
+            }
+            alert(id ? 'Advogado atualizado!' : 'Advogado cadastrado!');
+            bootstrap.Modal.getInstance(document.getElementById('modalAddAdvogado')).hide();
+            loadPage('advogados');
+        }
+
+        function bloquearAdvogado(id) { if (confirm('Bloquear advogado?')) { let adv = usuarios.find(u=>u.id===id); if (adv) { adv.ativo = false; loadPage('advogados'); } } }
+        function ativarAdvogado(id) { let adv = usuarios.find(u=>u.id===id); if (adv) { adv.ativo = true; loadPage('advogados'); } }
+        function editarAdvogado(id) { abrirModalAddAdvogado(id); }
+        function verHistoricoAdvogado(id) {
+            let p = processos.filter(p=>p.advogadoId===id).length;
+            let q = quotas.filter(q=>q.advogadoId===id);
+            let a = assistencias.filter(a=>a.advogadoId===id).length;
+            alert(`Histórico:\nProcessos: ${p}\nQuotas pagas: ${q.filter(q=>q.pago).length}/${q.length}\nAssistências: ${a}`);
+        }
+
+        // ---------- 6.3. GESTÃO DE PROCESSOS ----------
+        function carregarPaginaProcessos() {
+            const content = document.getElementById('contentArea');
+            content.innerHTML = `<div class="dashboard-card"><h4>Gestão de Processos</h4><p>Estrutura em desenvolvimento. Total de processos: ${processos.length}</p><div class="table-responsive"><table class="table"><thead><tr><th>Nº Processo</th><th>Cliente</th><th>Tipo</th><th>Advogado</th><th>Data</th><th>Status</th></tr></thead><tbody>${processos.map(p=>{let adv=usuarios.find(u=>u.id===p.advogadoId); return `<tr><td>${p.numero}</td><td>${p.cliente}</td><td>${p.tipo}</td><td>${adv?adv.nome:'---'}</td><td>${formatarData(p.data)}</td><td><span class="badge bg-success">${p.status}</span></td></tr>`;}).join('')}</tbody></table></div></div>`;
+        }
+
+        // ---------- 6.4. GESTÃO DE QUOTAS ----------
+        function carregarPaginaQuotas() {
+            const content = document.getElementById('contentArea');
+            content.innerHTML = `<div class="dashboard-card"><h4>Gestão de Quotas</h4><div class="table-responsive"><table class="table table-hover" id="tabelaQuotas"><thead><tr><th>Advogado</th><th>Ano</th><th>Mês</th><th>Valor</th><th>Data Pagamento</th><th>Status</th><th>Ações</th></tr></thead><tbody>${quotas.map(q=>{let adv=usuarios.find(u=>u.id===q.advogadoId); return `<tr><td>${adv?adv.nome:'---'}</td><td>${q.ano}</td><td>${q.mes}</td><td>${q.valor} AKZ</td><td>${q.dataPagamento?formatarData(q.dataPagamento):'---'}</td><td><span class="badge ${q.pago?'bg-success':'bg-warning'}">${q.pago?'Pago':'Pendente'}</span></td><td>${!q.pago?`<button class="btn btn-sm btn-oaa-small" onclick="registrarPagamentoQuota(${q.id})">Registar Pagamento</button>`:''}</td></tr>`;}).join('')}</tbody></table></div></div>`;
+            if ($.fn.DataTable.isDataTable('#tabelaQuotas')) $('#tabelaQuotas').DataTable().destroy();
+            $('#tabelaQuotas').DataTable({ language: { url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/pt-PT.json' }, pageLength: 10 });
+        }
+
+        function registrarPagamentoQuota(id) {
+            let q = quotas.find(q=>q.id===id);
+            if (q) { q.pago = true; q.dataPagamento = new Date().toISOString().split('T')[0]; alert('Pagamento registado!'); loadPage('quotas'); }
+        }
+
+        // ---------- 6.5. MAPA DE ASSISTÊNCIAS ----------
+        function carregarPaginaAssistencias() {
+            const content = document.getElementById('contentArea');
+            content.innerHTML = `
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h4>Mapa de Assistências Realizadas</h4>
+                    <button class="btn btn-oaa" onclick="abrirModalAddAssistencia()"><i class="fas fa-plus me-2"></i> Nova Assistência</button>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-4"><label>Filtrar por Advogado</label><select class="form-select" id="filtroAssistenciaAdvogado"><option value="todos">Todos</option></select></div>
+                    <div class="col-md-4"><label>Filtrar por Status</label><select class="form-select" id="filtroAssistenciaStatus"><option value="todos">Todos</option><option value="Realizada">Realizada</option><option value="Pendente">Pendente</option><option value="Concluída">Concluída</option></select></div>
+                </div>
+                <div class="dashboard-card">
+                    <div class="table-responsive">
+                        <table class="table table-hover" id="tabelaAssistencias">
+                            <thead><tr><th>Requerente</th><th>Advogado</th><th>Tipo Processo</th><th>Província</th><th>Nº Ofício</th><th>Data</th><th>Status</th><th>Ações</th></tr></thead>
+                            <tbody id="tbodyAssistencias"></tbody>
+                        </table>
+                    </div>
+                </div>
+            `;
+            atualizarTabelaAssistencias(assistencias);
+            preencherFiltroAdvogados();
+            document.getElementById('filtroAssistenciaAdvogado').addEventListener('change', filtrarAssistencias);
+            document.getElementById('filtroAssistenciaStatus').addEventListener('change', filtrarAssistencias);
+        }
+
+        function atualizarTabelaAssistencias(lista) {
+            const tbody = document.getElementById('tbodyAssistencias');
+            tbody.innerHTML = lista.map(a => {
+                const adv = usuarios.find(u => u.id === a.advogadoId);
+                return `<tr><td>${a.requerente}</td><td>${adv?adv.nome:'---'}</td><td>${a.tipoProcesso}</td><td>${a.provincia}</td><td>${a.numeroOficio||'---'}</td><td>${formatarData(a.dataAssistencia)}</td><td><span class="badge ${a.status==='Concluída'?'bg-success':a.status==='Pendente'?'bg-warning':'bg-primary'}">${a.status}</span></td><td><button class="btn btn-sm btn-outline-dark me-1" onclick="editarAssistencia(${a.id})"><i class="fas fa-edit"></i></button><button class="btn btn-sm btn-outline-danger" onclick="excluirAssistencia(${a.id})"><i class="fas fa-trash"></i></button></td></tr>`;
+            }).join('');
+            if ($.fn.DataTable.isDataTable('#tabelaAssistencias')) $('#tabelaAssistencias').DataTable().destroy();
+            $('#tabelaAssistencias').DataTable({ language: { url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/pt-PT.json' }, pageLength: 10 });
+        }
+
+        function preencherFiltroAdvogados() {
+            const select = document.getElementById('filtroAssistenciaAdvogado');
+            let advs = usuarios.filter(u => u.role === 'advogado' && u.ativo);
+            select.innerHTML = '<option value="todos">Todos</option>' + advs.map(a=>`<option value="${a.id}">${a.nome}</option>`).join('');
+        }
+
+        function filtrarAssistencias() {
+            let lista = [...assistencias];
+            let advId = document.getElementById('filtroAssistenciaAdvogado').value;
+            let status = document.getElementById('filtroAssistenciaStatus').value;
+            if (advId !== 'todos') lista = lista.filter(a => a.advogadoId == advId);
+            if (status !== 'todos') lista = lista.filter(a => a.status === status);
+            atualizarTabelaAssistencias(lista);
+        }
+
+        function abrirModalAddAssistencia(id = null) {
+            const isEdit = id !== null;
+            const a = isEdit ? assistencias.find(a => a.id === id) : null;
+            const advOptions = usuarios.filter(u => u.role === 'advogado' && u.ativo).map(adv => `<option value="${adv.id}" ${a && a.advogadoId === adv.id ? 'selected' : ''}>${adv.nome}</option>`).join('');
+            const modalHTML = `
+                <div class="modal fade" id="modalAddAssistencia" tabindex="-1">
+                    <div class="modal-dialog modal-lg"><div class="modal-content">
+                        <div class="modal-header" style="background: var(--gradient-dark); color: var(--primary);">
+                            <h5 class="modal-title"><i class="fas fa-map-marker-alt me-2"></i> ${isEdit ? 'Editar' : 'Nova'} Assistência</h5>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="formAddAssistencia">
+                                <div class="row">
+                                    <div class="col-md-6 mb-3"><label class="form-label">Requerente *</label><input type="text" class="form-control" id="requerenteAssistencia" value="${a?.requerente||''}" required></div>
+                                    <div class="col-md-6 mb-3"><label class="form-label">Advogado *</label><select class="form-control" id="advogadoAssistencia" required>${advOptions}</select></div>
+                                    <div class="col-md-4 mb-3"><label class="form-label">Tipo Processo *</label><select class="form-control" id="tipoProcessoAssistencia" required><option value="Cível" ${a?.tipoProcesso==='Cível'?'selected':''}>Cível</option><option value="Laboral" ${a?.tipoProcesso==='Laboral'?'selected':''}>Laboral</option><option value="Crime" ${a?.tipoProcesso==='Crime'?'selected':''}>Crime</option><option value="Família" ${a?.tipoProcesso==='Família'?'selected':''}>Família</option></select></div>
+                                    <div class="col-md-4 mb-3"><label class="form-label">Província *</label><input type="text" class="form-control" id="provinciaAssistencia" value="${a?.provincia||'Malanje'}" required></div>
+                                    <div class="col-md-4 mb-3"><label class="form-label">Nº Ofício</label><input type="text" class="form-control" id="oficioAssistencia" value="${a?.numeroOficio||''}"></div>
+                                    <div class="col-md-4 mb-3"><label class="form-label">Data *</label><input type="date" class="form-control" id="dataAssistencia" value="${a?.dataAssistencia||new Date().toISOString().split('T')[0]}" required></div>
+                                    <div class="col-md-4 mb-3"><label class="form-label">Status *</label><select class="form-control" id="statusAssistencia" required><option value="Realizada" ${a?.status==='Realizada'?'selected':''}>Realizada</option><option value="Pendente" ${a?.status==='Pendente'?'selected':''}>Pendente</option><option value="Concluída" ${a?.status==='Concluída'?'selected':''}>Concluída</option></select></div>
+                                    <div class="col-md-12 mb-3"><label class="form-label">Descrição</label><textarea class="form-control" id="descricaoAssistencia" rows="3">${a?.descricao||''}</textarea></div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-outline-dark" data-bs-dismiss="modal">Cancelar</button>
+                            <button type="button" class="btn btn-oaa" onclick="salvarAssistencia(${id})">${isEdit ? 'Atualizar' : 'Salvar'}</button>
+                        </div>
+                    </div></div>
+                </div>
+            `;
+            const modalDiv = document.createElement('div');
+            modalDiv.innerHTML = modalHTML;
+            document.body.appendChild(modalDiv);
+            new bootstrap.Modal(document.getElementById('modalAddAssistencia')).show();
+            modalDiv.addEventListener('hidden.bs.modal', () => modalDiv.remove());
+        }
+
+        function salvarAssistencia(id = null) {
+            const req = document.getElementById('requerenteAssistencia').value;
+            const advId = parseInt(document.getElementById('advogadoAssistencia').value);
+            const tipo = document.getElementById('tipoProcessoAssistencia').value;
+            const prov = document.getElementById('provinciaAssistencia').value;
+            const oficio = document.getElementById('oficioAssistencia').value;
+            const data = document.getElementById('dataAssistencia').value;
+            const status = document.getElementById('statusAssistencia').value;
+            const desc = document.getElementById('descricaoAssistencia').value;
+            if (!req || !advId || !tipo || !prov || !data || !status) { alert('Preencha campos obrigatórios!'); return; }
+            if (id) {
+                const index = assistencias.findIndex(a => a.id === id);
+                if (index !== -1) assistencias[index] = { ...assistencias[index], requerente: req, advogadoId: advId, tipoProcesso: tipo, provincia: prov, numeroOficio: oficio, dataAssistencia: data, status, descricao: desc };
+            } else {
+                const novoId = assistencias.length ? Math.max(...assistencias.map(a=>a.id)) + 1 : 1;
+                assistencias.push({ id: novoId, requerente: req, advogadoId: advId, tipoProcesso: tipo, provincia: prov, numeroOficio: oficio, dataAssistencia: data, status, descricao: desc });
+            }
+            alert(id ? 'Assistência atualizada!' : 'Assistência cadastrada!');
+            bootstrap.Modal.getInstance(document.getElementById('modalAddAssistencia')).hide();
+            loadPage('assistencias');
+        }
+
+        function editarAssistencia(id) { abrirModalAddAssistencia(id); }
+        function excluirAssistencia(id) { if (confirm('Excluir?')) { assistencias = assistencias.filter(a=>a.id!==id); loadPage('assistencias'); } }
+
+        // ---------- 6.6. GESTÃO DE ADMINISTRADORES ----------
+        function carregarPaginaAdministradores() {
+            const content = document.getElementById('contentArea');
+            const admins = usuarios.filter(u => u.role === 'admin' && u.id !== currentUser.id);
+            content.innerHTML = `
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h4>Gestão de Administradores</h4>
+                    <button class="btn btn-oaa" onclick="abrirModalAddAdmin()"><i class="fas fa-user-plus me-2"></i> Novo Administrador</button>
+                </div>
+                <div class="dashboard-card">
+                    <div class="table-responsive">
+                        <table class="table table-hover" id="tabelaAdministradores">
+                            <thead><tr><th>Nome</th><th>Email</th><th>Telefone</th><th>Status</th><th>Ações</th></tr></thead>
+                            <tbody>${admins.map(adm=>`<tr><td><strong>${adm.nome}</strong></td><td>${adm.email}</td><td>${adm.telefone||'---'}</td><td><span class="badge ${adm.ativo?'bg-success':'bg-danger'}">${adm.ativo?'Ativo':'Bloqueado'}</span></td><td><button class="btn btn-sm btn-outline-dark me-1" onclick="editarAdmin(${adm.id})"><i class="fas fa-edit"></i></button><button class="btn btn-sm btn-outline-danger" onclick="excluirAdmin(${adm.id})"><i class="fas fa-trash"></i></button></td></tr>`).join('')}</tbody>
+                        </table>
+                    </div>
+                </div>
+            `;
+            if ($.fn.DataTable.isDataTable('#tabelaAdministradores')) $('#tabelaAdministradores').DataTable().destroy();
+            $('#tabelaAdministradores').DataTable({ language: { url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/pt-PT.json' }, pageLength: 10 });
+        }
+
+        function abrirModalAddAdmin(id = null) {
+            const isEdit = id !== null;
+            const adm = isEdit ? usuarios.find(u => u.id === id) : null;
+            const modalHTML = `
+                <div class="modal fade" id="modalAddAdmin" tabindex="-1">
+                    <div class="modal-dialog"><div class="modal-content">
+                        <div class="modal-header" style="background: var(--gradient-dark); color: var(--primary);">
+                            <h5 class="modal-title"><i class="fas fa-user-plus me-2"></i> ${isEdit ? 'Editar' : 'Novo'} Administrador</h5>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="formAddAdmin">
+                                <div class="mb-3"><label class="form-label">Nome *</label><input type="text" class="form-control" id="nomeAdmin" value="${adm?.nome||''}" required></div>
+                                <div class="mb-3"><label class="form-label">Email *</label><input type="email" class="form-control" id="emailAdmin" value="${adm?.email||''}" required></div>
+                                <div class="mb-3"><label class="form-label">Telefone</label><input type="text" class="form-control" id="telefoneAdmin" value="${adm?.telefone||''}"></div>
+                                ${!isEdit ? `<div class="mb-3"><label class="form-label">Senha *</label><input type="password" class="form-control" id="senhaAdmin" required></div>` : ''}
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-outline-dark" data-bs-dismiss="modal">Cancelar</button>
+                            <button type="button" class="btn btn-oaa" onclick="salvarAdmin(${id})">${isEdit ? 'Atualizar' : 'Salvar'}</button>
+                        </div>
+                    </div></div>
+                </div>
+            `;
+            const modalDiv = document.createElement('div');
+            modalDiv.innerHTML = modalHTML;
+            document.body.appendChild(modalDiv);
+            new bootstrap.Modal(document.getElementById('modalAddAdmin')).show();
+            modalDiv.addEventListener('hidden.bs.modal', () => modalDiv.remove());
+        }
+
+        function salvarAdmin(id = null) {
+            const nome = document.getElementById('nomeAdmin').value;
+            const email = document.getElementById('emailAdmin').value;
+            const telefone = document.getElementById('telefoneAdmin').value;
+            if (!nome || !email) { alert('Preencha nome e email!'); return; }
+            if (id) {
+                const index = usuarios.findIndex(u => u.id === id);
+                if (index !== -1) usuarios[index] = { ...usuarios[index], nome, email, telefone };
+            } else {
+                const senha = document.getElementById('senhaAdmin').value;
+                if (!senha) { alert('Senha obrigatória!'); return; }
+                const novoId = usuarios.length ? Math.max(...usuarios.map(u=>u.id)) + 1 : 1;
+                usuarios.push({ id: novoId, nome, email, senha, role: 'admin', avatar: nome.charAt(0), telefone, ativo: true, dataRegistro: new Date().toISOString().split('T')[0] });
+            }
+            alert(id ? 'Administrador atualizado!' : 'Administrador cadastrado!');
+            bootstrap.Modal.getInstance(document.getElementById('modalAddAdmin')).hide();
+            loadPage('administradores');
+        }
+
+        function editarAdmin(id) { abrirModalAddAdmin(id); }
+        function excluirAdmin(id) { if (confirm('Excluir administrador?')) { usuarios = usuarios.filter(u => u.id !== id); loadPage('administradores'); } }
+
+        // ---------- 6.7. GESTÃO DE NOTÍCIAS ----------
+        function carregarPaginaNoticiasAdmin() {
+            const content = document.getElementById('contentArea');
+            content.innerHTML = `
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h4>Gestão de Notícias</h4>
+                    <button class="btn btn-oaa" onclick="abrirModalAddNoticiaAdmin()"><i class="fas fa-plus me-2"></i> Nova Notícia</button>
+                </div>
+                <div class="dashboard-card">
+                    <div class="table-responsive">
+                        <table class="table table-hover" id="tabelaNoticiasAdmin">
+                            <thead><tr><th>Título</th><th>Data</th><th>Autor</th><th>Público?</th><th>Status</th><th>Ações</th></tr></thead>
+                            <tbody>${noticias.map(n=>`<tr><td><strong>${n.titulo}</strong><br><small>${n.resumo.substring(0,60)}...</small></td><td>${formatarData(n.dataPublicacao)}</td><td>${n.autor}</td><td><span class="badge ${n.publico?'bg-success':'bg-secondary'}">${n.publico?'Sim':'Não'}</span></td><td><span class="badge ${n.status==='publicado'?'bg-success':'bg-warning'}">${n.status}</span></td><td><button class="btn btn-sm btn-outline-dark me-1" onclick="editarNoticiaAdmin(${n.id})"><i class="fas fa-edit"></i></button><button class="btn btn-sm btn-outline-danger" onclick="excluirNoticiaAdmin(${n.id})"><i class="fas fa-trash"></i></button></td></tr>`).join('')}</tbody>
+                        </table>
+                    </div>
+                </div>
+            `;
+            if ($.fn.DataTable.isDataTable('#tabelaNoticiasAdmin')) $('#tabelaNoticiasAdmin').DataTable().destroy();
+            $('#tabelaNoticiasAdmin').DataTable({ language: { url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/pt-PT.json' }, pageLength: 10 });
+        }
+
+        function abrirModalAddNoticiaAdmin(id = null) {
+            const isEdit = id !== null;
+            const n = isEdit ? noticias.find(n => n.id === id) : null;
+            const modalHTML = `
+                <div class="modal fade" id="modalAddNoticiaAdmin" tabindex="-1">
+                    <div class="modal-dialog modal-lg"><div class="modal-content">
+                        <div class="modal-header" style="background: var(--gradient-dark); color: var(--primary);">
+                            <h5 class="modal-title"><i class="fas fa-newspaper me-2"></i> ${isEdit ? 'Editar' : 'Nova'} Notícia</h5>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="formAddNoticiaAdmin">
+                                <div class="row">
+                                    <div class="col-md-12 mb-3"><label class="form-label">Título *</label><input type="text" class="form-control" id="tituloNoticiaAdmin" value="${n?.titulo||''}" required></div>
+                                    <div class="col-md-12 mb-3"><label class="form-label">Resumo *</label><textarea class="form-control" id="resumoNoticiaAdmin" rows="2" required>${n?.resumo||''}</textarea></div>
+                                    <div class="col-md-12 mb-3"><label class="form-label">Conteúdo *</label><textarea class="form-control" id="conteudoNoticiaAdmin" rows="5" required>${n?.conteudo||''}</textarea></div>
+                                    <div class="col-md-6 mb-3"><label class="form-label">Data de Publicação</label><input type="date" class="form-control" id="dataNoticiaAdmin" value="${n?.dataPublicacao||new Date().toISOString().split('T')[0]}"></div>
+                                    <div class="col-md-6 mb-3"><label class="form-label">URL da Imagem</label><input type="text" class="form-control" id="imagemNoticiaAdmin" value="${n?.imagem||'https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=400'}"></div>
+                                    <div class="col-md-6 mb-3"><div class="form-check"><input class="form-check-input" type="checkbox" id="publicoNoticiaAdmin" ${n?.publico?'checked':''}><label class="form-check-label">Público</label></div></div>
+                                    <div class="col-md-6 mb-3"><label class="form-label">Status</label><select class="form-control" id="statusNoticiaAdmin"><option value="publicado" ${n?.status==='publicado'?'selected':''}>Publicado</option><option value="rascunho" ${n?.status==='rascunho'?'selected':''}>Rascunho</option></select></div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-outline-dark" data-bs-dismiss="modal">Cancelar</button>
+                            <button type="button" class="btn btn-oaa" onclick="salvarNoticiaAdmin(${id})">${isEdit ? 'Atualizar' : 'Salvar'}</button>
+                        </div>
+                    </div></div>
+                </div>
+            `;
+            const modalDiv = document.createElement('div');
+            modalDiv.innerHTML = modalHTML;
+            document.body.appendChild(modalDiv);
+            new bootstrap.Modal(document.getElementById('modalAddNoticiaAdmin')).show();
+            modalDiv.addEventListener('hidden.bs.modal', () => modalDiv.remove());
+        }
+
+        function salvarNoticiaAdmin(id = null) {
+            const titulo = document.getElementById('tituloNoticiaAdmin').value;
+            const resumo = document.getElementById('resumoNoticiaAdmin').value;
+            const conteudo = document.getElementById('conteudoNoticiaAdmin').value;
+            const data = document.getElementById('dataNoticiaAdmin').value;
+            const imagem = document.getElementById('imagemNoticiaAdmin').value;
+            const publico = document.getElementById('publicoNoticiaAdmin').checked;
+            const status = document.getElementById('statusNoticiaAdmin').value;
+            if (!titulo || !resumo || !conteudo) { alert('Preencha título, resumo e conteúdo!'); return; }
+            if (id) {
+                const index = noticias.findIndex(n => n.id === id);
+                if (index !== -1) noticias[index] = { ...noticias[index], titulo, resumo, conteudo, dataPublicacao: data, imagem, publico, status };
+            } else {
+                const novoId = noticias.length ? Math.max(...noticias.map(n=>n.id)) + 1 : 1;
+                noticias.push({ id: novoId, titulo, resumo, conteudo, dataPublicacao: data, autor: currentUser.nome, imagem, publico, status });
+            }
+            alert(id ? 'Notícia atualizada!' : 'Notícia publicada!');
+            bootstrap.Modal.getInstance(document.getElementById('modalAddNoticiaAdmin')).hide();
+            loadPage('noticias-admin');
+        }
+
+        function excluirNoticiaAdmin(id) { if (confirm('Excluir notícia?')) { noticias = noticias.filter(n => n.id !== id); loadPage('noticias-admin'); } }
+        function editarNoticiaAdmin(id) { abrirModalAddNoticiaAdmin(id); }
+
+        // ---------- 6.8. GESTÃO DE COMUNICADOS ----------
+        function carregarPaginaComunicadosAdmin() {
+            const content = document.getElementById('contentArea');
+            content.innerHTML = `
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h4>Gestão de Comunicados</h4>
+                    <button class="btn btn-oaa" onclick="abrirModalAddComunicado()"><i class="fas fa-plus me-2"></i> Novo Comunicado</button>
+                </div>
+                <div class="dashboard-card">
+                    <div class="table-responsive">
+                        <table class="table table-hover" id="tabelaComunicadosAdmin">
+                            <thead><tr><th>Título</th><th>Data</th><th>Autor</th><th>Público?</th><th>Ações</th></tr></thead>
+                            <tbody>${comunicados.map(c=>`<tr><td><strong>${c.titulo}</strong><br><small>${c.conteudo.substring(0,60)}...</small></td><td>${formatarData(c.data)}</td><td>${c.autor}</td><td><span class="badge ${c.publico?'bg-success':'bg-secondary'}">${c.publico?'Sim':'Não'}</span></td><td><button class="btn btn-sm btn-outline-dark me-1" onclick="editarComunicado(${c.id})"><i class="fas fa-edit"></i></button><button class="btn btn-sm btn-outline-danger" onclick="excluirComunicado(${c.id})"><i class="fas fa-trash"></i></button></td></tr>`).join('')}</tbody>
+                        </table>
+                    </div>
+                </div>
+            `;
+            if ($.fn.DataTable.isDataTable('#tabelaComunicadosAdmin')) $('#tabelaComunicadosAdmin').DataTable().destroy();
+            $('#tabelaComunicadosAdmin').DataTable({ language: { url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/pt-PT.json' }, pageLength: 10 });
+        }
+
+        function abrirModalAddComunicado(id = null) {
+            const isEdit = id !== null;
+            const c = isEdit ? comunicados.find(c => c.id === id) : null;
+            const modalHTML = `
+                <div class="modal fade" id="modalAddComunicado" tabindex="-1">
+                    <div class="modal-dialog"><div class="modal-content">
+                        <div class="modal-header" style="background: var(--gradient-dark); color: var(--primary);">
+                            <h5 class="modal-title"><i class="fas fa-bullhorn me-2"></i> ${isEdit ? 'Editar' : 'Novo'} Comunicado</h5>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="formAddComunicado">
+                                <div class="mb-3"><label class="form-label">Título *</label><input type="text" class="form-control" id="tituloComunicado" value="${c?.titulo||''}" required></div>
+                                <div class="mb-3"><label class="form-label">Conteúdo *</label><textarea class="form-control" id="conteudoComunicado" rows="5" required>${c?.conteudo||''}</textarea></div>
+                                <div class="mb-3"><label class="form-label">Data</label><input type="date" class="form-control" id="dataComunicado" value="${c?.data||new Date().toISOString().split('T')[0]}"></div>
+                                <div class="mb-3"><div class="form-check"><input class="form-check-input" type="checkbox" id="publicoComunicado" ${c?.publico?'checked':''}><label class="form-check-label">Público</label></div></div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-outline-dark" data-bs-dismiss="modal">Cancelar</button>
+                            <button type="button" class="btn btn-oaa" onclick="salvarComunicado(${id})">${isEdit ? 'Atualizar' : 'Salvar'}</button>
+                        </div>
+                    </div></div>
+                </div>
+            `;
+            const modalDiv = document.createElement('div');
+            modalDiv.innerHTML = modalHTML;
+            document.body.appendChild(modalDiv);
+            new bootstrap.Modal(document.getElementById('modalAddComunicado')).show();
+            modalDiv.addEventListener('hidden.bs.modal', () => modalDiv.remove());
+        }
+
+        function salvarComunicado(id = null) {
+            const titulo = document.getElementById('tituloComunicado').value;
+            const conteudo = document.getElementById('conteudoComunicado').value;
+            const data = document.getElementById('dataComunicado').value;
+            const publico = document.getElementById('publicoComunicado').checked;
+            if (!titulo || !conteudo) { alert('Preencha título e conteúdo!'); return; }
+            if (id) {
+                const index = comunicados.findIndex(c => c.id === id);
+                if (index !== -1) comunicados[index] = { ...comunicados[index], titulo, conteudo, data, publico };
+            } else {
+                const novoId = comunicados.length ? Math.max(...comunicados.map(c=>c.id)) + 1 : 1;
+                comunicados.push({ id: novoId, titulo, conteudo, data, autor: currentUser.nome, publico, status: 'publicado' });
+            }
+            alert(id ? 'Comunicado atualizado!' : 'Comunicado criado!');
+            bootstrap.Modal.getInstance(document.getElementById('modalAddComunicado')).hide();
+            loadPage('comunicados-admin');
+        }
+        function excluirComunicado(id) { if (confirm('Excluir comunicado?')) { comunicados = comunicados.filter(c => c.id !== id); loadPage('comunicados-admin'); } }
+        function editarComunicado(id) { abrirModalAddComunicado(id); }
+
+        // ---------- 6.9. GESTÃO DE EVENTOS ----------
+        function carregarPaginaEventosAdmin() {
+            const content = document.getElementById('contentArea');
+            content.innerHTML = `
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h4>Gestão de Eventos e Cursos</h4>
+                    <button class="btn btn-oaa" onclick="abrirModalAddEventoAdmin()"><i class="fas fa-calendar-plus me-2"></i> Novo Evento</button>
+                </div>
+                <div class="dashboard-card">
+                    <div class="table-responsive">
+                        <table class="table table-hover" id="tabelaEventosAdmin">
+                            <thead><tr><th>Título</th><th>Tipo</th><th>Data(s)</th><th>Local</th><th>Vagas</th><th>Público?</th><th>Status</th><th>Docs</th><th>Ações</th></tr></thead>
+                            <tbody>${eventos.map(e=>`<tr><td><strong>${e.titulo}</strong></td><td>${e.tipo}</td><td>${e.data||`${e.dataInicio} a ${e.dataFim}`}</td><td>${e.local}</td><td>${e.vagas?`${e.inscritos}/${e.vagas}`:'-'}</td><td><span class="badge ${e.publico?'bg-success':'bg-secondary'}">${e.publico?'Sim':'Não'}</span></td><td><span class="badge ${e.status==='aberto'?'bg-success':'bg-secondary'}">${e.status}</span></td><td><span class="badge bg-info">${e.documentos?.length||0}</span></td><td><button class="btn btn-sm btn-outline-dark me-1" onclick="editarEventoAdmin(${e.id})"><i class="fas fa-edit"></i></button><button class="btn btn-sm btn-outline-danger" onclick="excluirEventoAdmin(${e.id})"><i class="fas fa-trash"></i></button></td></tr>`).join('')}</tbody>
+                        </table>
+                    </div>
+                </div>
+            `;
+            if ($.fn.DataTable.isDataTable('#tabelaEventosAdmin')) $('#tabelaEventosAdmin').DataTable().destroy();
+            $('#tabelaEventosAdmin').DataTable({ language: { url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/pt-PT.json' }, pageLength: 10 });
+        }
+
+        function abrirModalAddEventoAdmin(id = null) {
+            const isEdit = id !== null;
+            const e = isEdit ? eventos.find(e => e.id === id) : null;
+            const modalHTML = `
+                <div class="modal fade" id="modalAddEventoAdmin" tabindex="-1">
+                    <div class="modal-dialog modal-xl"><div class="modal-content">
+                        <div class="modal-header" style="background: var(--gradient-dark); color: var(--primary);">
+                            <h5 class="modal-title"><i class="fas fa-calendar-plus me-2"></i> ${isEdit ? 'Editar' : 'Novo'} Evento/Curso</h5>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="formAddEventoAdmin">
+                                <div class="row">
+                                    <div class="col-md-8 mb-3"><label class="form-label">Título *</label><input type="text" class="form-control" id="tituloEventoAdmin" value="${e?.titulo||''}" required></div>
+                                    <div class="col-md-4 mb-3"><label class="form-label">Tipo *</label><select class="form-control" id="tipoEventoAdmin"><option value="">Selecione...</option><option value="Seminário" ${e?.tipo==='Seminário'?'selected':''}>Seminário</option><option value="Curso" ${e?.tipo==='Curso'?'selected':''}>Curso</option><option value="Palestra" ${e?.tipo==='Palestra'?'selected':''}>Palestra</option><option value="Congresso" ${e?.tipo==='Congresso'?'selected':''}>Congresso</option></select></div>
+                                    <div class="col-md-4 mb-3"><label class="form-label">Data Início *</label><input type="date" class="form-control" id="dataInicioEventoAdmin" value="${e?.dataInicio||e?.data||''}" required></div>
+                                    <div class="col-md-4 mb-3"><label class="form-label">Data Fim</label><input type="date" class="form-control" id="dataFimEventoAdmin" value="${e?.dataFim||''}"></div>
+                                    <div class="col-md-4 mb-3"><label class="form-label">Local *</label><input type="text" class="form-control" id="localEventoAdmin" value="${e?.local||''}" required></div>
+                                    <div class="col-md-4 mb-3"><label class="form-label">Vagas</label><input type="number" class="form-control" id="vagasEventoAdmin" value="${e?.vagas||''}" min="0"></div>
+                                    <div class="col-md-12 mb-3"><label class="form-label">Descrição *</label><textarea class="form-control" id="descricaoEventoAdmin" rows="4" required>${e?.descricao||''}</textarea></div>
+                                    <div class="col-md-6 mb-3"><div class="form-check"><input class="form-check-input" type="checkbox" id="publicoEventoAdmin" ${e?.publico?'checked':''}><label class="form-check-label">Público</label></div></div>
+                                    <div class="col-md-6 mb-3"><label class="form-label">Status</label><select class="form-control" id="statusEventoAdmin"><option value="aberto" ${e?.status==='aberto'?'selected':''}>Aberto</option><option value="encerrado" ${e?.status==='encerrado'?'selected':''}>Encerrado</option></select></div>
+                                </div>
+                                <hr>
+                                <h5 class="mt-3">Documentos do Evento</h5>
+                                <div id="documentosEventoContainer">
+                                    ${e?.documentos?e.documentos.map((doc,idx)=>`
+                                        <div class="row mb-2 doc-item">
+                                            <div class="col-md-4"><input type="text" class="form-control" placeholder="Nome" value="${doc.nome}" id="docNome${idx}" readonly></div>
+                                            <div class="col-md-3"><input type="text" class="form-control" placeholder="Tamanho" value="${doc.tamanho}" id="docTam${idx}" readonly></div>
+                                            <div class="col-md-3"><input type="text" class="form-control" placeholder="Descrição" value="${doc.descricao}" id="docDesc${idx}"></div>
+                                            <div class="col-md-2"><button type="button" class="btn btn-outline-danger btn-sm" onclick="removerDocumentoEvento(this)"><i class="fas fa-trash"></i></button></div>
+                                        </div>
+                                    `).join(''):''}
+                                </div>
+                                <button type="button" class="btn btn-outline-dark btn-sm mt-2" onclick="adicionarDocumentoEvento()"><i class="fas fa-plus"></i> Adicionar documento</button>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-outline-dark" data-bs-dismiss="modal">Cancelar</button>
+                            <button type="button" class="btn btn-oaa" onclick="salvarEventoAdmin(${id})">${isEdit?'Atualizar':'Salvar'}</button>
+                        </div>
+                    </div></div>
+                </div>
+            `;
+            const modalDiv = document.createElement('div');
+            modalDiv.innerHTML = modalHTML;
+            document.body.appendChild(modalDiv);
+            new bootstrap.Modal(document.getElementById('modalAddEventoAdmin')).show();
+            modalDiv.addEventListener('hidden.bs.modal', () => modalDiv.remove());
+        }
+
+        window.adicionarDocumentoEvento = function() {
+            const container = document.getElementById('documentosEventoContainer');
+            const idx = container.children.length;
+            const div = document.createElement('div');
+            div.className = 'row mb-2 doc-item';
+            div.innerHTML = `<div class="col-md-4"><input type="text" class="form-control" placeholder="Nome" id="docNomeNovo${idx}"></div><div class="col-md-3"><input type="text" class="form-control" placeholder="Tamanho" id="docTamNovo${idx}"></div><div class="col-md-3"><input type="text" class="form-control" placeholder="Descrição" id="docDescNovo${idx}"></div><div class="col-md-2"><button type="button" class="btn btn-outline-danger btn-sm" onclick="removerDocumentoEvento(this)"><i class="fas fa-trash"></i></button></div>`;
+            container.appendChild(div);
+        };
+        window.removerDocumentoEvento = function(btn) { btn.closest('.doc-item').remove(); };
+
+        function salvarEventoAdmin(id = null) {
+            const titulo = document.getElementById('tituloEventoAdmin').value;
+            const tipo = document.getElementById('tipoEventoAdmin').value;
+            const dataInicio = document.getElementById('dataInicioEventoAdmin').value;
+            const dataFim = document.getElementById('dataFimEventoAdmin').value || null;
+            const local = document.getElementById('localEventoAdmin').value;
+            const vagas = document.getElementById('vagasEventoAdmin').value;
+            const descricao = document.getElementById('descricaoEventoAdmin').value;
+            const publico = document.getElementById('publicoEventoAdmin').checked;
+            const status = document.getElementById('statusEventoAdmin').value;
+            if (!titulo || !tipo || !dataInicio || !local || !descricao) { alert('Preencha campos obrigatórios!'); return; }
+            const docs = [];
+            document.querySelectorAll('#documentosEventoContainer .doc-item').forEach(item => {
+                const nome = item.querySelector('input[placeholder*="Nome"]')?.value || item.querySelector('input[id^="docNome"]')?.value;
+                const tam = item.querySelector('input[placeholder*="Tamanho"]')?.value || item.querySelector('input[id^="docTam"]')?.value;
+                const desc = item.querySelector('input[placeholder*="Descrição"]')?.value || item.querySelector('input[id^="docDesc"]')?.value;
+                if (nome && nome.trim()) docs.push({ nome: nome.trim(), tamanho: tam?.trim()||'0 KB', descricao: desc?.trim()||'', dataUpload: new Date().toISOString().split('T')[0] });
+            });
+            if (id) {
+                const index = eventos.findIndex(e => e.id === id);
+                if (index !== -1) eventos[index] = { ...eventos[index], titulo, tipo, dataInicio, dataFim, local, vagas: vagas?parseInt(vagas):null, descricao, publico, status, documentos: docs };
+            } else {
+                const novoId = eventos.length ? Math.max(...eventos.map(e=>e.id)) + 1 : 1;
+                eventos.push({ id: novoId, titulo, tipo, data: dataFim?null:dataInicio, dataInicio, dataFim, local, vagas: vagas?parseInt(vagas):null, inscritos: 0, descricao, publico, status, documentos: docs });
+            }
+            alert(id ? 'Evento atualizado!' : 'Evento criado!');
+            bootstrap.Modal.getInstance(document.getElementById('modalAddEventoAdmin')).hide();
+            loadPage('eventos-admin');
+        }
+
+        function editarEventoAdmin(id) { abrirModalAddEventoAdmin(id); }
+        function excluirEventoAdmin(id) { if (confirm('Excluir evento?')) { eventos = eventos.filter(e => e.id !== id); loadPage('eventos-admin'); } }
+
+        // ---------- 6.10. GESTÃO DE DOCUMENTOS OFICIAIS ----------
+        function carregarPaginaDocumentosAdmin() {
+            const content = document.getElementById('contentArea');
+            content.innerHTML = `
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h4>Gestão de Documentos Oficiais</h4>
+                    <button class="btn btn-oaa" onclick="abrirModalAddDocumentoAdmin()"><i class="fas fa-file-upload me-2"></i> Novo Documento</button>
+                </div>
+                <div class="dashboard-card">
+                    <div class="table-responsive">
+                        <table class="table table-hover" id="tabelaDocumentosAdmin">
+                            <thead><tr><th>Título</th><th>Categoria</th><th>Data</th><th>Tamanho</th><th>Downloads</th><th>Público?</th><th>Ações</th></tr></thead>
+                            <tbody>${documentosOficiais.map(d=>`<tr><td><strong>${d.titulo}</strong></td><td>${d.categoria}</td><td>${formatarData(d.dataPublicacao)}</td><td>${d.tamanho}</td><td>${d.downloads}</td><td><span class="badge ${d.publico?'bg-success':'bg-secondary'}">${d.publico?'Sim':'Não'}</span></td><td><button class="btn btn-sm btn-outline-dark me-1" onclick="editarDocumentoAdmin(${d.id})"><i class="fas fa-edit"></i></button><button class="btn btn-sm btn-outline-danger" onclick="excluirDocumentoAdmin(${d.id})"><i class="fas fa-trash"></i></button></td></tr>`).join('')}</tbody>
+                        </table>
+                    </div>
+                </div>
+            `;
+            if ($.fn.DataTable.isDataTable('#tabelaDocumentosAdmin')) $('#tabelaDocumentosAdmin').DataTable().destroy();
+            $('#tabelaDocumentosAdmin').DataTable({ language: { url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/pt-PT.json' }, pageLength: 10 });
+        }
+
+        function abrirModalAddDocumentoAdmin(id = null) {
+            const isEdit = id !== null;
+            const d = isEdit ? documentosOficiais.find(d => d.id === id) : null;
+            const modalHTML = `
+                <div class="modal fade" id="modalAddDocumentoAdmin" tabindex="-1">
+                    <div class="modal-dialog"><div class="modal-content">
+                        <div class="modal-header" style="background: var(--gradient-dark); color: var(--primary);">
+                            <h5 class="modal-title"><i class="fas fa-file-upload me-2"></i> ${isEdit?'Editar':'Novo'} Documento</h5>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="formAddDocumentoAdmin">
+                                <div class="mb-3"><label class="form-label">Título *</label><input type="text" class="form-control" id="tituloDocumentoAdmin" value="${d?.titulo||''}" required></div>
+                                <div class="mb-3"><label class="form-label">Categoria *</label><select class="form-control" id="categoriaDocumentoAdmin"><option value="">Selecione...</option><option value="Regulamento" ${d?.categoria==='Regulamento'?'selected':''}>Regulamento</option><option value="Tabela" ${d?.categoria==='Tabela'?'selected':''}>Tabela</option><option value="Circular" ${d?.categoria==='Circular'?'selected':''}>Circular</option><option value="Despacho" ${d?.categoria==='Despacho'?'selected':''}>Despacho</option><option value="Edital" ${d?.categoria==='Edital'?'selected':''}>Edital</option></select></div>
+                                <div class="mb-3"><label class="form-label">Data de Publicação</label><input type="date" class="form-control" id="dataDocumentoAdmin" value="${d?.dataPublicacao||new Date().toISOString().split('T')[0]}"></div>
+                                <div class="mb-3"><label class="form-label">Tamanho (simulação)</label><input type="text" class="form-control" id="tamanhoDocumentoAdmin" value="${d?.tamanho||'1.0 MB'}"></div>
+                                <div class="mb-3"><div class="form-check"><input class="form-check-input" type="checkbox" id="publicoDocumentoAdmin" ${d?.publico?'checked':''}><label class="form-check-label">Público</label></div></div>
+                                <div class="mb-3"><label class="form-label">Nome do arquivo (simulação)</label><input type="text" class="form-control" id="arquivoDocumentoAdmin" value="${d?.arquivo||'documento.pdf'}"></div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-outline-dark" data-bs-dismiss="modal">Cancelar</button>
+                            <button type="button" class="btn btn-oaa" onclick="salvarDocumentoAdmin(${id})">${isEdit?'Atualizar':'Salvar'}</button>
+                        </div>
+                    </div></div>
+                </div>
+            `;
+            const modalDiv = document.createElement('div');
+            modalDiv.innerHTML = modalHTML;
+            document.body.appendChild(modalDiv);
+            new bootstrap.Modal(document.getElementById('modalAddDocumentoAdmin')).show();
+            modalDiv.addEventListener('hidden.bs.modal', () => modalDiv.remove());
+        }
+
+        function salvarDocumentoAdmin(id = null) {
+            const titulo = document.getElementById('tituloDocumentoAdmin').value;
+            const categoria = document.getElementById('categoriaDocumentoAdmin').value;
+            const data = document.getElementById('dataDocumentoAdmin').value;
+            const tamanho = document.getElementById('tamanhoDocumentoAdmin').value;
+            const publico = document.getElementById('publicoDocumentoAdmin').checked;
+            const arquivo = document.getElementById('arquivoDocumentoAdmin').value;
+            if (!titulo || !categoria) { alert('Preencha título e categoria!'); return; }
+            if (id) {
+                const index = documentosOficiais.findIndex(d => d.id === id);
+                if (index !== -1) documentosOficiais[index] = { ...documentosOficiais[index], titulo, categoria, dataPublicacao: data, tamanho, publico, arquivo };
+            } else {
+                const novoId = documentosOficiais.length ? Math.max(...documentosOficiais.map(d=>d.id)) + 1 : 1;
+                documentosOficiais.push({ id: novoId, titulo, categoria, dataPublicacao: data, arquivo, tamanho, downloads: 0, publico });
+            }
+            alert(id ? 'Documento atualizado!' : 'Documento cadastrado!');
+            bootstrap.Modal.getInstance(document.getElementById('modalAddDocumentoAdmin')).hide();
+            loadPage('documentos-admin');
+        }
+
+        function excluirDocumentoAdmin(id) { if (confirm('Excluir documento?')) { documentosOficiais = documentosOficiais.filter(d => d.id !== id); loadPage('documentos-admin'); } }
+        function editarDocumentoAdmin(id) { abrirModalAddDocumentoAdmin(id); }
+
+        // ---------- 6.11. PÁGINAS FUTURAS ----------
+        function carregarPaginaRelatorios() { document.getElementById('contentArea').innerHTML = '<div class="dashboard-card"><h4>Relatórios</h4><p>Estrutura em desenvolvimento.</p></div>'; }
+        function carregarPaginaConfiguracoes() { document.getElementById('contentArea').innerHTML = '<div class="dashboard-card"><h4>Configurações</h4><p>Estrutura em desenvolvimento.</p></div>'; }
+
+        // =====================================================================
+        // 7. PÁGINAS DO ADVOGADO
+        // =====================================================================
+        function carregarMeusProcessos() {
+            const meus = processos.filter(p => p.advogadoId === currentUser.id);
+            document.getElementById('contentArea').innerHTML = `<div class="dashboard-card"><h4>Meus Processos</h4><div class="table-responsive"><table class="table"><thead><tr><th>Nº Processo</th><th>Cliente</th><th>Tipo</th><th>Data</th><th>Status</th></tr></thead><tbody>${meus.map(p=>`<tr><td>${p.numero}</td><td>${p.cliente}</td><td>${p.tipo}</td><td>${formatarData(p.data)}</td><td><span class="badge" style="background: var(--primary); color: var(--accent);">${p.status}</span></td></tr>`).join('')}</tbody></table></div></div>`;
+        }
+        function carregarMinhasQuotas() {
+            const minhas = quotas.filter(q => q.advogadoId === currentUser.id);
+            document.getElementById('contentArea').innerHTML = `<div class="dashboard-card"><h4>Minhas Quotas</h4><div class="table-responsive"><table class="table"><thead><tr><th>Ano</th><th>Mês</th><th>Valor</th><th>Data Pagamento</th><th>Status</th></tr></thead><tbody>${minhas.map(q=>`<tr><td>${q.ano}</td><td>${q.mes}</td><td>${q.valor} AKZ</td><td>${q.dataPagamento?formatarData(q.dataPagamento):'---'}</td><td><span class="badge ${q.pago?'bg-success':'bg-warning'}">${q.pago?'Pago':'Pendente'}</span></td></tr>`).join('')}</tbody></table></div></div>`;
+        }
+        function carregarMinhasAssistencias() {
+            const minhas = assistencias.filter(a => a.advogadoId === currentUser.id);
+            document.getElementById('contentArea').innerHTML = `<div class="dashboard-card"><h4>Minhas Assistências</h4><div class="table-responsive"><table class="table"><thead><tr><th>Requerente</th><th>Tipo Processo</th><th>Província</th><th>Nº Ofício</th><th>Data</th><th>Status</th></tr></thead><tbody>${minhas.map(a=>`<tr><td>${a.requerente}</td><td>${a.tipoProcesso}</td><td>${a.provincia}</td><td>${a.numeroOficio||'---'}</td><td>${formatarData(a.dataAssistencia)}</td><td><span class="badge bg-primary">${a.status}</span></td></tr>`).join('')}</tbody></table></div></div>`;
+        }
+        function carregarNoticiasAdvogado() {
+            const pubs = noticias.filter(n => n.publico && n.status === 'publicado');
+            let html = '<div class="row">';
+            pubs.forEach(n => html += `<div class="col-md-6 mb-4"><div class="dashboard-card h-100"><img src="${n.imagem}" class="card-img-top mb-3" style="height:200px; object-fit:cover;"><h5>${n.titulo}</h5><small>${formatarData(n.dataPublicacao)} • ${n.autor}</small><p class="mt-2">${n.resumo}</p><button class="btn btn-oaa-small" onclick="verNoticiaDetalhe(${n.id})">Ler</button></div></div>`);
+            html += '</div>';
+            document.getElementById('contentArea').innerHTML = html || '<p>Nenhuma notícia disponível.</p>';
+        }
+        function carregarComunicadosAdvogado() {
+            const pubs = comunicados.filter(c => c.publico);
+            let html = '<div class="list-group">';
+            pubs.forEach(c => html += `<div class="list-group-item"><h5>${c.titulo}</h5><small>${formatarData(c.data)} • ${c.autor}</small><p>${c.conteudo}</p></div>`);
+            html += '</div>';
+            document.getElementById('contentArea').innerHTML = html || '<p>Nenhum comunicado.</p>';
+        }
+        function carregarEventosAdvogado() {
+            const pubs = eventos.filter(e => e.publico);
+            let html = '<div class="row">';
+            pubs.forEach(e => html += `<div class="col-md-6 mb-4"><div class="dashboard-card h-100"><h5><i class="fas fa-calendar-alt" style="color: var(--primary);"></i> ${e.titulo}</h5><p><strong>Tipo:</strong> ${e.tipo}</p><p><strong>Data:</strong> ${e.data||e.dataInicio}</p><p><strong>Local:</strong> ${e.local}</p>${e.vagas?`<p><strong>Vagas:</strong> ${e.inscritos}/${e.vagas}</p>`:''}<p>${e.descricao.substring(0,100)}...</p><button class="btn btn-oaa-small" onclick="inscreverEventoAdv(${e.id})">Inscrever-me</button>${e.documentos?.length?`<button class="btn btn-outline-dark btn-sm ms-2" onclick="verDocumentosEvento(${e.id})"><i class="fas fa-paperclip"></i> Documentos</button>`:''}</div></div>`);
+            html += '</div>';
+            document.getElementById('contentArea').innerHTML = html || '<p>Nenhum evento.</p>';
+        }
+        function inscreverEventoAdv(id) {
+            const e = eventos.find(e => e.id === id);
+            if (e && e.status === 'aberto' && (e.vagas === null || e.inscritos < e.vagas)) { e.inscritos++; alert(`Inscrição realizada em "${e.titulo}"!`); carregarEventosAdvogado(); }
+            else alert('Evento não disponível.');
+        }
+        function verDocumentosEvento(id) {
+            const e = eventos.find(e => e.id === id);
+            if (e?.documentos?.length) {
+                let msg = `Documentos do evento "${e.titulo}":\n`;
+                e.documentos.forEach(d => msg += `\n- ${d.nome} (${d.tamanho}) - ${d.descricao}`);
+                alert(msg);
+            }
+        }
+        function carregarDocumentosAdvogado() {
+            const content = document.getElementById('contentArea');
+            content.innerHTML = `<div class="table-responsive"><table class="table table-hover" id="tabelaDocumentosAdv" style="width:100%"><thead><tr><th>Título</th><th>Categoria</th><th>Data</th><th>Tamanho</th><th>Downloads</th><th>Ação</th></tr></thead><tbody></tbody></table></div>`;
+            const tbody = $('#tabelaDocumentosAdv tbody');
+            documentosOficiais.filter(d => d.publico).forEach(d => tbody.append(`<tr><td><strong>${d.titulo}</strong></td><td>${d.categoria}</td><td>${formatarData(d.dataPublicacao)}</td><td>${d.tamanho}</td><td>${d.downloads}</td><td><button class="btn btn-sm btn-oaa-small" onclick="baixarDocumentoOficial(${d.id})"><i class="fas fa-download"></i> Baixar</button></td></tr>`));
+            if ($.fn.DataTable.isDataTable('#tabelaDocumentosAdv')) $('#tabelaDocumentosAdv').DataTable().destroy();
+            $('#tabelaDocumentosAdv').DataTable({ language: { url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/pt-PT.json' }, pageLength: 10 });
+        }
+        function carregarPaginaPerfil() {
+            document.getElementById('contentArea').innerHTML = `
+                <div class="dashboard-card">
+                    <h4>Meu Perfil</h4>
+                    <p><strong>Nome:</strong> ${currentUser.nome}</p>
+                    <p><strong>Email:</strong> ${currentUser.email}</p>
+                    <p><strong>Telefone:</strong> ${currentUser.telefone||'---'}</p>
+                    ${currentUser.role==='advogado'?`<p><strong>Cédula:</strong> ${currentUser.cedula||'---'}</p><p><strong>Especialidade:</strong> ${currentUser.especialidade||'Geral'}</p><p><strong>Província:</strong> ${currentUser.provincia||'---'}</p>`:''}
+                    <hr>
+                    <h5>Alterar Senha</h5>
+                    <form onsubmit="alterarSenha(event)">
+                        <div class="mb-3"><input type="password" class="form-control" id="senhaAtual" placeholder="Senha atual" required></div>
+                        <div class="mb-3"><input type="password" class="form-control" id="senhaNova" placeholder="Nova senha" required></div>
+                        <button type="submit" class="btn btn-oaa-small">Alterar Senha</button>
+                    </form>
+                </div>
+            `;
+        }
+        function alterarSenha(e) {
+            e.preventDefault();
+            const atual = document.getElementById('senhaAtual').value;
+            const nova = document.getElementById('senhaNova').value;
+            if (atual !== currentUser.senha) { alert('Senha atual incorreta!'); return; }
+            currentUser.senha = nova;
+            const idx = usuarios.findIndex(u => u.id === currentUser.id);
+            if (idx !== -1) usuarios[idx].senha = nova;
+            alert('Senha alterada!');
+            document.getElementById('senhaAtual').value = ''; document.getElementById('senhaNova').value = '';
+        }
+    </script>
+</body>
+</html>
